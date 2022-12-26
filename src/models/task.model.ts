@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 import { Category } from "../emums";
 
-export interface ITaskStatic extends mongoose.Document {
+export interface ITaskStatic {
     name: string;
     category: Category[];
     durationLimit: number;
@@ -12,7 +12,7 @@ export interface ITaskStatic extends mongoose.Document {
     description: string;
 }
 
-const taskStaticSchema = new mongoose.Schema({
+const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
     name: {
         type: String,
         required: true,
@@ -27,4 +27,4 @@ const taskStaticSchema = new mongoose.Schema({
     description: { type: String, required: true },
 });
 
-export const TaskStatic = mongoose.model<ITaskStatic>("User", taskStaticSchema);
+export const taskStatic = mongoose.model<ITaskStatic>("Task", taskStaticSchema);

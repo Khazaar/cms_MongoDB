@@ -1,5 +1,5 @@
 import { Category } from "./emums";
-import { ITaskStatic } from "./models/task.model";
+import { ITaskStatic } from "./models/taskStatic.model";
 
 export const sampleTaskStatic: ITaskStatic[] = [
     {

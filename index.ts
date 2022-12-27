@@ -1,11 +1,11 @@
-import { connect } from "mongoose";
 import * as dotenv from "dotenv";
 dotenv.config();
 import { Constants } from "./src/constants";
 import { ConnectionHelper } from "./src/helpers/connection.helper";
-import { CreateService } from "./src/services/create.service";
-import { sampleTaskStatic } from "./src/sample-data";
+import { app } from "./src/app";
 
 ConnectionHelper.connectToDatabase();
-const createService: CreateService = new CreateService();
-createService.createTask(sampleTaskStatic[1]);
+const port = 6666;
+app.listen(port, () => {
+    console.log(`App listening on port ${port}`);
+});

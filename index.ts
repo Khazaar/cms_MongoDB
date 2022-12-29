@@ -5,7 +5,7 @@ import { ConnectionHelper } from "./src/helpers/connection.helper";
 import { app } from "./src/app";
 
 ConnectionHelper.connectToDatabase();
-const port = 6666;
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
+
+app.listen(Constants.port, () => {
+    console.log(`App listening on port ${Constants.port}`);
 });

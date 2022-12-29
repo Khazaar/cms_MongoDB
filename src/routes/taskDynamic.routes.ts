@@ -1,13 +1,19 @@
 import express, { Router } from "express";
 import controller from "../controllers/document.controllers";
-import { taskDynamic } from "../models/taskDynamic.model";
+import { taskDynamicModel } from "../models/taskDynamic.model";
 
 const router: Router = express.Router();
 
-router.post("/create", controller.createDocument(taskDynamic));
-router.get("/readAll", controller.readDocuments(taskDynamic));
-router.get("/readByField", controller.readDocumentByFields(taskDynamic));
-router.delete("/deleteByField", controller.deleteDocumentByFields(taskDynamic));
-router.put("/updateByField", controller.updateDocumentByFields(taskDynamic));
+router.post("/create", controller.createDocument(taskDynamicModel));
+router.get("/readAll", controller.readDocuments(taskDynamicModel));
+router.get("/readByField", controller.readDocumentByFields(taskDynamicModel));
+router.delete(
+    "/deleteByField",
+    controller.deleteDocumentByFields(taskDynamicModel)
+);
+router.put(
+    "/updateByField",
+    controller.updateDocumentByFields(taskDynamicModel)
+);
 
 export default { router };

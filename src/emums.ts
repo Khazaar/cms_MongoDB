@@ -14,3 +14,22 @@ export enum Category {
     dotNet = ".Net",
     CSharp = "C Sharp",
 }
+
+export enum AppError {
+    General = "General",
+    ConnectionError = "ConnectionError",
+    QueryError = "QueryError",
+    NoData = "NoData",
+    NonNumericInput = "NonNumeric",
+    InputParameterNotSupplied = "NoParameter",
+    DeletionConflict = "DeletionConflict",
+    RequiredFieldsNotProvided = "RequiredFieldsNotProvided",
+    UniqueFieldsCollision = "UniqueFieldsCollision",
+}
+
+export enum HTTPRequestType {
+    GET = "GET",
+    POST = "POST",
+    DEL = "DEL",
+    PUT = "PUT",
+}

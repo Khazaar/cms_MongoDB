@@ -20,7 +20,7 @@ const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
     participantsList: { type: Array<String>, required: true },
 });
 
-export const taskDynamic = mongoose.model<ITaskDynamic>(
+export const taskDynamicModel = mongoose.model<ITaskDynamic>(
     "taskDynamic",
     taskDynamicSchema,
     "taskDynamic"

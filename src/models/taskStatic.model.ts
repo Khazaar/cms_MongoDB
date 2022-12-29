@@ -27,7 +27,7 @@ const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
     description: { type: String, required: true },
 });
 
-export const taskStatic = mongoose.model<ITaskStatic>(
+export const taskStaticModel = mongoose.model<ITaskStatic>(
     "taskStatic",
     taskStaticSchema,
     "taskStatic"

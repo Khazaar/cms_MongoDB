@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/77f338b3-eb6f-44df-89ad-e9a92a8ecfc3/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/cms-backend-egor",
+    "appService.deploySubpath": "."
+}

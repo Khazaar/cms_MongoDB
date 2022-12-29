@@ -17,7 +17,7 @@ const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
     },
     startTime: { type: Number, required: true },
     endTime: { type: Number, required: true },
-    participantsList: { type: Array<String>, required: true },
+    participantsList: [String],
 });
 
 export const taskDynamicModel = mongoose.model<ITaskDynamic>(

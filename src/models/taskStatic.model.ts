@@ -18,7 +18,7 @@ const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
         required: true,
         unique: true,
     },
-    category: { type: Array<Category>, required: true, default: [] },
+    category: [String],
     durationLimit: { type: Number, required: true },
     points: { type: Number, required: true },
     bonusTask: { type: String, required: true },

@@ -1,4 +1,4 @@
-import { AppError, HTTPRequestType } from "./emums";
+import { AppError, Host, HTTPRequestType, Port } from "./emums";
 
 export interface systemError {
     key: AppError;
@@ -7,8 +7,8 @@ export interface systemError {
 }
 
 export interface IOptions {
-    host: string;
-    port: number;
+    host: Host;
+    port: Port;
     path: string;
     method: HTTPRequestType;
     headers: {

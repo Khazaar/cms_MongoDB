@@ -33,3 +33,13 @@ export enum HTTPRequestType {
     DEL = "DEL",
     PUT = "PUT",
 }
+
+export enum Host {
+    localhost = "localhost",
+    azure = "azure",
+}
+
+export enum Port {
+    expressLocalEgor = 6666,
+    azure = 0,
+}

@@ -48,10 +48,4 @@ app.use((req, res, next) => {
     });
 });
 
-/** Server */
-// const httpServer = http.createServer(app);
-// const PORT: any = process.env.PORT ?? 6666;
-// httpServer.listen(PORT, () => {
-//     console.log(`The server is running on port ${PORT}`);
-// });
 export { app };

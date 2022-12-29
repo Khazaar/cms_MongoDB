@@ -1,9 +1,6 @@
-import queryString from "query-string";
-import { Constants } from "../constants";
 import { ITaskDynamic, taskDynamicModel } from "../models/taskDynamic.model";
-import { DocumentService } from "../services/document.service";
 import { IOptions } from "../entities";
-import { HTTPRequestType } from "../emums";
+import { Host, HTTPRequestType, Port } from "../emums";
 import { getDocumentField, putDocument } from "../services/request.service";
 
 export const createTaskDynamic = async function (
@@ -15,8 +12,8 @@ export const createTaskDynamic = async function (
             `/taskStatic/readByField?field=name&value=${taskDynamic.taskStaticName}`
         );
         const taskStaticRequestOptions: IOptions = {
-            host: "localhost",
-            port: Constants.port,
+            host: Host.localhost,
+            port: Port.expressLocalEgor,
             path: path,
             method: HTTPRequestType.GET,
             headers: {
@@ -35,8 +32,8 @@ export const createTaskDynamic = async function (
             const taskStaticRequestPostData = JSON.stringify(taskDynamic);
             path = encodeURI(`/taskDynamic/create`);
             const taskStaticRequestOptions: IOptions = {
-                host: "localhost",
-                port: Constants.port,
+                host: Host.localhost,
+                port: Port.expressLocalEgor,
                 path: path,
                 method: HTTPRequestType.POST,
                 headers: {
@@ -46,11 +43,11 @@ export const createTaskDynamic = async function (
                     ),
                 },
             };
+            // Run Task Dynamic CRUD with obtained Task Static name
             await putDocument(
                 taskStaticRequestOptions,
                 taskStaticRequestPostData
             );
         }
-        // Run Task Dynamic CRUD with obtained Task Static name
     });
 };

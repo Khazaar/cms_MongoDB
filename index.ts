@@ -7,6 +7,7 @@ import { Port } from "./src/emums";
 
 ConnectionHelper.connectToDatabase();
 
-app.listen(Port.expressLocalEgor, () => {
-    console.log(`App listening on port ${Port.expressLocalEgor}`);
+const port = process.env.PORT as string; // != undefined process.env.PORT ? "6666"
+app.listen(port, () => {
+    console.log(`App listening on port ${port}`);
 });

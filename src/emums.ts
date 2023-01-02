@@ -44,8 +44,9 @@ export enum Port {
     azure = 0,
 }
 
-export enum ItemPermission {
-    CreateItems = "create:items",
-    UpdateItems = "update:items",
-    DeleteItems = "delete:items",
+export enum TaskStaticPermission {
+    CreateTaskStatic = "create:taskStatic",
+    ReadTaskStatic = "read:taskStatic",
+    UpdateTaskStatic = "update:taskStatic",
+    DeleteTaskStatic = "delete:taskStatic",
 }

@@ -43,3 +43,9 @@ export enum Port {
     expressLocalEgor = 6666,
     azure = 0,
 }
+
+export enum ItemPermission {
+    CreateItems = "create:items",
+    UpdateItems = "update:items",
+    DeleteItems = "delete:items",
+}

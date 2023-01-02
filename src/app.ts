@@ -10,9 +10,14 @@ import taskDynamicoutes from "./routes/taskDynamic.routes";
 //import morgan from "morgan";
 import cors from "cors";
 import http from "http";
+import auth from "express-openid-connect";
+import { checkJwt } from "./middleware/authz.middleware";
+import { checkPermissions } from "./middleware/permissions.middleware";
 
 const app: Express = express();
 
+// Auth
+app.use(checkJwt);
 /** Logging */
 /** Parse the request */
 app.use(express.urlencoded({ extended: false }));

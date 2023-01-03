@@ -7,3 +7,4 @@ export const checkPermissions = (permissions: string[]) => {
         failWithError: true,
     });
 };
+//customUserKey: "auth",

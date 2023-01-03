@@ -15,5 +15,5 @@ export const checkJwt = expressjwt({
     audience: process.env.AUTH0_AUDIENCE,
     issuer: `https://${process.env.AUTH0_DOMAIN}/`,
     algorithms: ["RS256"],
-    credentialsRequired: false,
+    credentialsRequired: true,
 });

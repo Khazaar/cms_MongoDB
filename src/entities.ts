@@ -14,5 +14,6 @@ export interface IOptions {
     headers: {
         "Content-Type": string | number;
         "Content-Length"?: string | number;
+        Authorization?: string;
     };
 }

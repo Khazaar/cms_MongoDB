@@ -8,7 +8,9 @@ import {
 } from "../services/request.service";
 import { ITaskStatic, taskStaticModel } from "../models/taskStatic.model";
 
-export const getTaskStatics = async function (): Promise<void> {
+export const getTaskStatics = async function (
+    authToken: string
+): Promise<void> {
     return new Promise(async (resolve, reject) => {
         // Check if it is corresponding Task Static
         let path = encodeURI(`/taskStatic/readAll`);
@@ -19,6 +21,7 @@ export const getTaskStatics = async function (): Promise<void> {
             method: HTTPRequestType.GET,
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
             },
         };
         const taskStatics = await getDocuments(

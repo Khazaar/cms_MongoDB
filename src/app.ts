@@ -1,6 +1,7 @@
 import express, { Express, ErrorRequestHandler } from "express";
 import taskStaticRoutes from "./routes/taskStatic.routes";
 import taskDynamicRoutes from "./routes/taskDynamic.routes";
+import teamRoutes from "./routes/team.routes";
 import { checkJwt } from "./middleware/authz.middleware";
 
 const app: Express = express();
@@ -38,6 +39,7 @@ app.use((req, res, next) => {
 /** Routes */
 app.use("/taskStatic", taskStaticRoutes.router);
 app.use("/taskDynamic", taskDynamicRoutes.router);
+app.use("/team", teamRoutes.router);
 
 /** Error handling */
 app.use((req, res, next) => {

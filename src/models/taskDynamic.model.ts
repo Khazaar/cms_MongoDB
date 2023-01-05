@@ -7,6 +7,7 @@ export interface ITaskDynamic {
     startTime: number;
     endTime: number;
     participantsList: string[];
+    solution: string;
 }
 
 const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({

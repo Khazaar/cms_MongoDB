@@ -1,4 +1,5 @@
 import { AppError, Host, HTTPRequestType, Port } from "./emums";
+import { ITaskDynamic } from "./models/taskDynamic.model";
 
 export interface systemError {
     key: AppError;
@@ -16,4 +17,12 @@ export interface IOptions {
         "Content-Length"?: string | number;
         Authorization?: string;
     };
+}
+
+export interface IDashboard {
+    userName: string;
+    teamName: string;
+    listOfOpenedTasks: [ITaskDynamic];
+    listOfSolvedTasks: [ITaskDynamic];
+    listOfSubmittedTasks: [ITaskDynamic];
 }

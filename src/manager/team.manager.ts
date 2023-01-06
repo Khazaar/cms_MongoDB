@@ -31,20 +31,12 @@ export const takeTask = async function (
     return new Promise(async (resolve, reject) => {
         //  Get TaskStatic by name
 
-        const taskStaticsRequestOptions: IOptions = {
-            host: Host.localhost,
-            port: Port.expressLocalEgor,
-            path: encodeURI(
-                `/taskStatic/readByField?field=name&value=${taskStaticName}`
-            ),
-            method: HTTPRequestType.GET,
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
         const taskStatic = ((
-            await getDocuments(taskStaticModel, taskStaticsRequestOptions)
+            await getDocuments(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/taskStatic/readByField`,
+                { fieldTitle: "name", filedValue: taskStaticName }
+            )
         )[0] as unknown) as ITaskStatic;
 
         if (taskStatic == undefined) {
@@ -59,23 +51,13 @@ export const takeTask = async function (
                 collaborators: collaborators,
             };
 
-            const taskDynamicRequestOptions: IOptions = {
-                host: Host.localhost,
-                port: Port.expressLocalEgor,
-                path: encodeURI(`/taskDynamic/create`),
-                method: HTTPRequestType.POST,
-                headers: {
-                    Authorization: `Bearer ${authToken}`,
-                    "Content-Type": "application/json",
-                    "Content-Length": Buffer.byteLength(
-                        JSON.stringify(taskDynamic)
-                    ),
-                },
-            };
             await postDocument(
-                taskDynamicRequestOptions,
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/taskDynamic/create`,
                 JSON.stringify(taskDynamic)
             );
+
+            //  Update team
         }
     });
 };

@@ -1,4 +1,5 @@
 import { Model, Document } from "mongoose";
+import { IField } from "../entities";
 
 export class DocumentService {
     public async createDocument(
@@ -58,13 +59,17 @@ export class DocumentService {
 
     public async updateDocumentByFields(
         model: Model<any>,
-        field: string,
-        value: string,
+        updatedFields: IField[],
         doc: Document
     ): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                await model.findOneAndUpdate({ [field]: value }, doc);
+                for (const fld of updatedFields) {
+                    await model.findOneAndUpdate(
+                        { [fld.fieldTitle]: fld.filedValue },
+                        doc
+                    );
+                }
                 resolve();
             } catch {
                 reject();

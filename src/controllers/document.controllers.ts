@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Model } from "mongoose";
+import { IField } from "../entities";
 import { DocumentService } from "../services/document.service";
 
 const documentService: DocumentService = new DocumentService();
@@ -84,13 +85,15 @@ const updateDocumentByFields = (model: Model<any>) => async (
     next: NextFunction
 ) => {
     const body = req.body;
-    const field = req.query.field as string;
-    const value = req.query.value as string;
+    const field: IField = {
+        fieldTitle: req.query.field as string,
+        filedValue: req.query.value as string,
+    };
     console.log(
-        `Updating all documents from ${model.name} with ${field} equal to ${value}`
+        `Updating all documents from ${model.name} with ${field.fieldTitle} equal to ${field.filedValue}`
     );
     documentService
-        .updateDocumentByFields(model, field, value, body)
+        .updateDocumentByFields(model, [field], body)
         .then(() => {
             return res.status(200).json();
         })

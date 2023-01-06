@@ -6,9 +6,9 @@ export interface ITeam {
     name: string;
     icon: string;
     listOfParticipants: [string];
+    listOfTasksDynamic: [string];
     finishedTasksNumber: number;
     openedTasksNumber: number;
-    openedTasksNames: [string];
     earnedPoints: number;
     potentionalPoints: number;
 }
@@ -21,7 +21,7 @@ const teamSchema = new mongoose.Schema<ITeam>({
     },
     icon: { type: String, required: true },
     listOfParticipants: { type: [String], required: true },
-    openedTasksNames: { type: [String], required: true },
+    listOfTasksDynamic: { type: [String], required: true },
     finishedTasksNumber: { type: Number, required: true },
     openedTasksNumber: { type: Number, required: true },
     earnedPoints: { type: Number, required: true },

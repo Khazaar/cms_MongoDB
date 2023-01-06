@@ -4,7 +4,7 @@ import { Host, HTTPRequestType, Port } from "../emums";
 import {
     getDocumentField,
     getDocuments,
-    putDocument,
+    postDocument,
 } from "../services/request.service";
 import { ITaskStatic, taskStaticModel } from "../models/taskStatic.model";
 

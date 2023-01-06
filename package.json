@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "npx nodemon index.ts",
-        "eng": "npx ts-node engine.ts"
+        "mgr": "npx ts-node managersTest.ts"
     },
     "author": "",
     "license": "ISC",

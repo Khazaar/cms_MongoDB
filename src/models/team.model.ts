@@ -1,3 +1,4 @@
+import { ITaskDynamic } from "./taskDynamic.model";
 import * as mongoose from "mongoose";
 import { Category } from "../emums";
 
@@ -7,6 +8,7 @@ export interface ITeam {
     listOfParticipants: [string];
     finishedTasksNumber: number;
     openedTasksNumber: number;
+    openedTasksNames: [string];
     earnedPoints: number;
     potentionalPoints: number;
 }
@@ -18,8 +20,8 @@ const teamSchema = new mongoose.Schema<ITeam>({
         unique: true,
     },
     icon: { type: String, required: true },
-    listOfParticipants: [String],
-
+    listOfParticipants: { type: [String], required: true },
+    openedTasksNames: { type: [String], required: true },
     finishedTasksNumber: { type: Number, required: true },
     openedTasksNumber: { type: Number, required: true },
     earnedPoints: { type: Number, required: true },

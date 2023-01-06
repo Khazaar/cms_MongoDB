@@ -73,7 +73,7 @@ export const getDocuments = function (
     });
 };
 
-export const putDocument = function (
+export const postDocument = function (
     options: IOptions,
     postData: string
 ): Promise<void> {
@@ -99,5 +99,41 @@ export const putDocument = function (
         req.end(() => {
             resolve();
         });
+    });
+};
+
+// Mess
+export const getDocumentByField = function (
+    model: Model<any>,
+    options: IOptions
+): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        let req = http.request(options, (res) => {
+            let output = "";
+            console.log("rest::", options.host + ":" + res.statusCode);
+            res.setEncoding("utf8");
+
+            res.on("data", function (chunk) {
+                output += chunk;
+            });
+
+            res.on("end", () => {
+                try {
+                    let document: any[] = JSON.parse(output);
+                    console.log("document: ", document);
+                    resolve(document);
+                } catch (err) {
+                    console.error("rest::end", err);
+                    reject(err);
+                }
+            });
+        });
+
+        req.on("error", (err) => {
+            console.error("rest::request", err);
+            reject(err);
+        });
+
+        req.end();
     });
 };

@@ -4,10 +4,10 @@ import { ITaskStatic } from "./taskStatic.model";
 
 export interface ITaskDynamic {
     taskStaticName: string;
-    startTime: number;
-    endTime: number;
-    participantsList: string[];
-    solution: string;
+    startTime: Date;
+    endTime?: Date;
+    collaborators: string[];
+    solution?: string;
 }
 
 const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
@@ -16,9 +16,10 @@ const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
         required: true,
         unique: true,
     },
-    startTime: { type: Number, required: true },
-    endTime: { type: Number, required: true },
-    participantsList: [String],
+    startTime: { type: Date, required: true },
+    endTime: { type: Date, required: false },
+    collaborators: [String],
+    solution: { type: String, required: false },
 });
 
 export const taskDynamicModel = mongoose.model<ITaskDynamic>(

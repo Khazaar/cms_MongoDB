@@ -1,7 +1,7 @@
 import { ITaskDynamic, taskDynamicModel } from "../models/taskDynamic.model";
 import { IOptions } from "../entities";
 import { Host, HTTPRequestType, Port } from "../emums";
-import { getDocumentField, putDocument } from "../services/request.service";
+import { getDocumentField, postDocument } from "../services/request.service";
 
 export const createTaskDynamic = async function (
     taskDynamic: ITaskDynamic
@@ -44,7 +44,7 @@ export const createTaskDynamic = async function (
                 },
             };
             // Run Task Dynamic CRUD with obtained Task Static name
-            await putDocument(
+            await postDocument(
                 taskStaticRequestOptions,
                 taskStaticRequestPostData
             );

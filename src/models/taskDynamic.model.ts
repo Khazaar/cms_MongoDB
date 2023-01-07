@@ -1,18 +1,18 @@
 import * as mongoose from "mongoose";
-import { Category } from "../emums";
-import { ITaskStatic } from "./taskStatic.model";
+import { TaskCategory } from "../emums";
+import { ITaskStatic, taskStaticSchema } from "./taskStatic.model";
 
 export interface ITaskDynamic {
-    taskStaticName: string;
+    taskStatic: ITaskStatic;
     startTime: Date;
     endTime?: Date;
     collaborators: string[];
     solution?: string;
 }
 
-const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
-    taskStaticName: {
-        type: String,
+export const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
+    taskStatic: {
+        type: taskStaticSchema,
         required: true,
         unique: true,
     },

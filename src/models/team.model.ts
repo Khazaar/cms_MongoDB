@@ -1,13 +1,13 @@
-import { ITaskDynamic } from "./taskDynamic.model";
+import { ITaskDynamic, taskDynamicSchema } from "./taskDynamic.model";
 import * as mongoose from "mongoose";
-import { Category } from "../emums";
+import { TaskCategory } from "../emums";
 
 export interface ITeam {
     name: string;
     icon: string;
     listOfParticipants: string[];
-    listOfTasksDynamicInProgress: string[];
-    listOfTasksDynamicSumbitted: string[];
+    listOfTasksDynamicInProgress: ITaskDynamic[];
+    listOfTasksDynamicSumbitted: ITaskDynamic[];
     finishedTasksNumber: number;
     openedTasksNumber: number;
     earnedPoints: number;
@@ -22,8 +22,8 @@ const teamSchema = new mongoose.Schema<ITeam>({
     },
     icon: { type: String, required: true },
     listOfParticipants: { type: [String], required: true },
-    listOfTasksDynamicInProgress: { type: [String], required: true },
-    listOfTasksDynamicSumbitted: { type: [String], required: true },
+    listOfTasksDynamicInProgress: { type: [taskDynamicSchema], required: true },
+    listOfTasksDynamicSumbitted: { type: [taskDynamicSchema], required: true },
     finishedTasksNumber: { type: Number, required: true },
     openedTasksNumber: { type: Number, required: true },
     earnedPoints: { type: Number, required: true },

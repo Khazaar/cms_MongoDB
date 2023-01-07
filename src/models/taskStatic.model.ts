@@ -1,9 +1,9 @@
 import * as mongoose from "mongoose";
-import { Category } from "../emums";
+import { TaskCategory } from "../emums";
 
 export interface ITaskStatic {
     name: string;
-    category: Category[];
+    category: TaskCategory[];
     durationLimit: number;
     points: number;
     bonusTask: String;
@@ -12,7 +12,7 @@ export interface ITaskStatic {
     description: string;
 }
 
-const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
+export const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
     name: {
         type: String,
         required: true,

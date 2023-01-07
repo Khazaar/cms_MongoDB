@@ -5,14 +5,15 @@ export enum Role {
     TasksAdministrator = "Tasks administrator",
 }
 
-export enum Category {
+export enum TaskCategory {
     Frontend = "Frontend",
+    Backend = "Backend",
     Angular = "Angular",
     React = "React",
     TypeScript = "TypeScript",
     JavaScript = "JavaScript",
     dotNet = ".Net",
-    CSharp = "C Sharp",
+    CSharp = "C#",
 }
 
 export enum AppError {

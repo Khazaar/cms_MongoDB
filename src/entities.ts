@@ -26,3 +26,8 @@ export interface IDashboard {
     listOfSolvedTasks: [ITaskDynamic];
     listOfSubmittedTasks: [ITaskDynamic];
 }
+
+export interface IField {
+    fieldTitle: string;
+    filedValue: string | string[] | number;
+}

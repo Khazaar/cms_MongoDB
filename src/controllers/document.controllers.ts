@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Model } from "mongoose";
+import { IField } from "../entities";
 import { DocumentService } from "../services/document.service";
 
 const documentService: DocumentService = new DocumentService();
@@ -43,13 +44,16 @@ const readDocumentByFields = (model: Model<any>) => async (
     res: Response,
     next: NextFunction
 ) => {
-    const field = req.query.field as string;
-    const value = req.query.value as string;
+    const filterField: IField = {
+        fieldTitle: req.query.field as string,
+        filedValue: req.query.value as string,
+    };
+
     console.log(
-        `Reading all documents from ${model.name} with ${field} equal to ${value}`
+        `Reading all documents from ${model.name} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
     documentService
-        .readDocumentByFields(model, field, value)
+        .readDocumentByFields(model, filterField)
         .then((result: any[]) => {
             return res.status(200).json(result);
         })
@@ -63,13 +67,15 @@ const deleteDocumentByFields = (model: Model<any>) => async (
     res: Response,
     next: NextFunction
 ) => {
-    const field = req.query.field as string;
-    const value = req.query.value as string;
+    const filterField: IField = {
+        fieldTitle: req.query.field as string,
+        filedValue: req.query.value as string,
+    };
     console.log(
-        `Deleting all documents from ${model.name} with ${field} equal to ${value}`
+        `Deleting all documents from ${model.name} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
     documentService
-        .deleteDocumentByFields(model, field, value)
+        .deleteDocumentByFields(model, filterField)
         .then(() => {
             return res.status(200).json();
         })
@@ -83,16 +89,18 @@ const updateDocumentByFields = (model: Model<any>) => async (
     res: Response,
     next: NextFunction
 ) => {
-    const body = req.body;
-    const field = req.query.field as string;
-    const value = req.query.value as string;
+    const updateFields = req.body as IField[];
+    const filterField: IField = {
+        fieldTitle: req.query.field as string,
+        filedValue: req.query.value as string,
+    };
     console.log(
-        `Updating all documents from ${model.name} with ${field} equal to ${value}`
+        `Updating all documents from ${model.name} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
     documentService
-        .updateDocumentByFields(model, field, value, body)
-        .then(() => {
-            return res.status(200).json();
+        .updateDocumentByFields(model, filterField, updateFields)
+        .then((doc) => {
+            return res.status(200).json(doc);
         })
         .catch((error) => {
             return res.status(400).json(error);

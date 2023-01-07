@@ -1,4 +1,5 @@
 import { Model, Document } from "mongoose";
+import { IField } from "../entities";
 
 export class DocumentService {
     public async createDocument(
@@ -28,12 +29,13 @@ export class DocumentService {
 
     public async readDocumentByFields(
         model: Model<any>,
-        field: string,
-        value: string
+        filterField: IField
     ): Promise<Model<any>[]> {
         return new Promise(async (resolve, reject) => {
             try {
-                const docs = await model.find({ [field]: value });
+                const docs = await model.find({
+                    [filterField.fieldTitle]: filterField.filedValue,
+                });
                 resolve(docs);
             } catch {
                 reject();
@@ -43,12 +45,13 @@ export class DocumentService {
 
     public async deleteDocumentByFields(
         model: Model<any>,
-        field: string,
-        value: string
+        filterField: IField
     ): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                await model.deleteMany({ [field]: value });
+                await model.deleteMany({
+                    [filterField.fieldTitle]: filterField.filedValue,
+                });
                 resolve();
             } catch {
                 reject();
@@ -58,14 +61,25 @@ export class DocumentService {
 
     public async updateDocumentByFields(
         model: Model<any>,
-        field: string,
-        value: string,
-        doc: Document
-    ): Promise<void> {
+        filterField: IField,
+        updateFields: IField[]
+    ): Promise<any> {
         return new Promise(async (resolve, reject) => {
             try {
-                await model.findOneAndUpdate({ [field]: value }, doc);
-                resolve();
+                let doc;
+                for (const fld of updateFields) {
+                    doc = await model.findOneAndUpdate(
+                        {
+                            [filterField.fieldTitle]: filterField.filedValue,
+                        },
+                        { [fld.fieldTitle]: fld.filedValue },
+                        {
+                            new: true,
+                        }
+                    );
+                }
+
+                resolve(doc);
             } catch {
                 reject();
             }

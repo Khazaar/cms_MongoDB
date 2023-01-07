@@ -1,6 +1,4 @@
 // Create dashbiard
-
-import { reject } from "underscore";
 import { Host, Port, HTTPRequestType } from "../emums";
 import { IDashboard, IOptions } from "../entities";
 import { ITaskDynamic } from "../models/taskDynamic.model";
@@ -28,13 +26,12 @@ interface ITeamManager {
 
     checkTask(taskDynamic: ITaskDynamic): Promise<void>; //CA
 }
-
-export const takeTask = async function (
-    authToken: string,
-    taskStaticName: string,
-    collaborators: string[]
-): Promise<void> {
-    return new Promise(async (resolve, reject) => {
+export abstract class teamManager {
+    static takeTask = async function (
+        authToken: string,
+        taskStaticName: string,
+        collaborators: string[]
+    ) {
         //  Get TaskStatic by name
 
         const taskStatic = ((
@@ -46,7 +43,7 @@ export const takeTask = async function (
         )[0] as unknown) as ITaskStatic;
 
         if (taskStatic == undefined) {
-            reject("Task static nod found");
+            throw new Error("Task static nod found");
         } else {
             console.log(`Selected Task Static is:`);
             console.log(taskStatic);
@@ -69,6 +66,11 @@ export const takeTask = async function (
             team.listOfTasksDynamicInProgress.push(taskDynamic);
             team.openedTasksNumber += 1;
             team.potentionalPoints += taskStatic.points;
+            // repair
+            const numberOfParallel = 3;
+            if (team.openedTasksNumber > numberOfParallel) {
+                throw new Error("You have reached maximum number of tasks");
+            }
 
             updateDocumentFieldsRequest(
                 authToken,
@@ -89,29 +91,32 @@ export const takeTask = async function (
                 ]
             );
         }
-    });
-};
+    };
 
-export const submitTask = async function (authToken: string, taskName: string) {
-    // Get team
-    const teamName = "Popcorns2";
-    let team = ((
-        await getDocumentsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
-            { fieldTitle: "name", filedValue: teamName }
-        )
-    )[0] as unknown) as ITeam;
+    static submitTask = async function (
+        authToken: string,
+        taskName: string,
+        solution: string
+    ) {
+        // Get team
+        const teamName = "Popcorns2";
+        let team = ((
+            await getDocumentsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
+                { fieldTitle: "name", filedValue: teamName }
+            )
+        )[0] as unknown) as ITeam;
 
-    //  Get terget Task Dynamic
-    const targetTaskDynamic = team.listOfTasksDynamicInProgress.find(
-        (tsk) => tsk.taskStatic.name == taskName
-    );
+        //  Get terget Task Dynamic
+        const targetTaskDynamic = team.listOfTasksDynamicInProgress.find(
+            (tsk) => tsk.taskStatic.name == taskName
+        );
 
-    if (targetTaskDynamic == undefined) {
-        console.log("WARNING! No such task");
-        return;
-    } else {
+        if (targetTaskDynamic == undefined) {
+            throw new Error("WARNING! No such task");
+        }
+
         team.listOfTasksDynamicSumbitted.push(targetTaskDynamic);
         // Remove task dynamic from istOfTasksDynamicInProgress
         const listOfTasksDynamicInProgressUPD = team.listOfTasksDynamicInProgress.filter(
@@ -121,6 +126,7 @@ export const submitTask = async function (authToken: string, taskName: string) {
         );
         team.listOfTasksDynamicInProgress = listOfTasksDynamicInProgressUPD;
         team.openedTasksNumber -= 1;
+        targetTaskDynamic.solution = solution;
 
         updateDocumentFieldsRequest(
             authToken,
@@ -138,63 +144,109 @@ export const submitTask = async function (authToken: string, taskName: string) {
                     fieldTitle: "listOfTasksDynamicInProgress",
                     filedValue: team.listOfTasksDynamicInProgress,
                 },
+                {
+                    fieldTitle: "solution",
+                    filedValue: solution,
+                },
             ]
         );
-    }
-};
+    };
 
-export const gradeTask = async function (
-    authToken: string,
-    taskName: string,
-    gradePercent: number
-) {
-    // Get team
-    const teamName = "Popcorns2";
-    let team = ((
-        await getDocumentsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
-            { fieldTitle: "name", filedValue: teamName }
-        )
-    )[0] as unknown) as ITeam;
+    static gradeTask = async function (
+        authToken: string,
+        taskName: string,
+        gradePercent: number
+    ) {
+        // Get team
+        const teamName = "Popcorns2";
+        let team = ((
+            await getDocumentsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
+                { fieldTitle: "name", filedValue: teamName }
+            )
+        )[0] as unknown) as ITeam;
 
-    //  Get target Task Dynamic from submitted
-    const targetTaskDynamic = team.listOfTasksDynamicSumbitted.find(
-        (tsk) => tsk.taskStatic.name == taskName
-    );
-
-    if (targetTaskDynamic == undefined) {
-        console.log("WARNING!! No such task");
-        return;
-    } else {
-        //team.listOfTasksDynamicSumbitted.push(targetTaskDynamic);
-        const listOfTasksDynamicSumbittedUPD = team.listOfTasksDynamicSumbitted.filter(
-            (tsk) => {
-                tsk.taskStatic.name !== taskName;
-            }
+        //  Get target Task Dynamic from submitted
+        const targetTaskDynamic = team.listOfTasksDynamicSumbitted.find(
+            (tsk) => tsk.taskStatic.name == taskName
         );
-        team.listOfTasksDynamicSumbitted = listOfTasksDynamicSumbittedUPD;
-        team.openedTasksNumber -= 1;
-        team.earnedPoints +=
-            targetTaskDynamic.taskStatic.points * (gradePercent / 100);
+
+        if (targetTaskDynamic == undefined) {
+            console.log("WARNING!! No such task");
+            return;
+        } else {
+            //team.listOfTasksDynamicSumbitted.push(targetTaskDynamic);
+            const listOfTasksDynamicSumbittedUPD = team.listOfTasksDynamicSumbitted.filter(
+                (tsk) => {
+                    tsk.taskStatic.name !== taskName;
+                }
+            );
+            team.listOfTasksDynamicSumbitted = listOfTasksDynamicSumbittedUPD;
+            team.openedTasksNumber -= 1;
+            team.earnedPoints +=
+                targetTaskDynamic.taskStatic.points * (gradePercent / 100);
+
+            updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+                [
+                    {
+                        fieldTitle: "listOfTasksDynamicSumbitted",
+                        filedValue: team.listOfTasksDynamicSumbitted,
+                    },
+                    {
+                        fieldTitle: "openedTasksNumber",
+                        filedValue: team.openedTasksNumber,
+                    },
+                    {
+                        fieldTitle: "earnedPoints",
+                        filedValue: team.earnedPoints,
+                    },
+                ]
+            );
+        }
+    };
+    static resetTasks = async function (authToken: string) {
+        // Get team
+        const teamName = "Popcorns2";
+        let team = ((
+            await getDocumentsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
+                { fieldTitle: "name", filedValue: teamName }
+            )
+        )[0] as unknown) as ITeam;
 
         updateDocumentFieldsRequest(
             authToken,
             `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
             [
                 {
+                    fieldTitle: "listOfTasksDynamicInProgress",
+                    filedValue: [],
+                },
+                {
                     fieldTitle: "listOfTasksDynamicSumbitted",
-                    filedValue: team.listOfTasksDynamicSumbitted,
+                    filedValue: [],
+                },
+                {
+                    fieldTitle: "finishedTasksNumber",
+                    filedValue: 0,
                 },
                 {
                     fieldTitle: "openedTasksNumber",
-                    filedValue: team.openedTasksNumber,
+                    filedValue: 0,
                 },
                 {
                     fieldTitle: "earnedPoints",
-                    filedValue: team.earnedPoints,
+                    filedValue: 0,
+                },
+                {
+                    fieldTitle: "potentionalPoints",
+                    filedValue: 0,
                 },
             ]
         );
-    }
-};
+    };
+}

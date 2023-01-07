@@ -56,14 +56,7 @@ export const takeTask = async function (
                 collaborators: collaborators,
             };
 
-            await postDocumentRequest(
-                authToken,
-                `http://${Host.localhost}:${Port.expressLocalEgor}/taskDynamic/create`,
-                JSON.stringify(taskDynamic)
-            );
-            //  Get team by name
-            // Assumption:
-            const teamName = "Popcorns";
+            const teamName = "Popcorns2";
 
             let team = ((
                 await getDocumentsRequest(
@@ -72,7 +65,7 @@ export const takeTask = async function (
                     { fieldTitle: "name", filedValue: teamName }
                 )
             )[0] as unknown) as ITeam;
-            team.listOfTasksDynamicInProgress.push(taskDynamic.taskStaticName);
+            team.listOfTasksDynamicInProgress.push(taskDynamic);
             team.openedTasksNumber += 1;
             team.potentionalPoints += taskStatic.points;
 
@@ -81,7 +74,7 @@ export const takeTask = async function (
                 `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
                 [
                     {
-                        fieldTitle: "listOfTasksDynamic",
+                        fieldTitle: "listOfTasksDynamicInProgress",
                         filedValue: team.listOfTasksDynamicInProgress,
                     },
                     {
@@ -121,10 +114,10 @@ export const submitTask = async function (
     )[0] as unknown) as ITeam;
 
     //  Update team
-    team.listOfTasksDynamicSumbitted.push(taskDynamic.taskStaticName);
+    team.listOfTasksDynamicSumbitted.push(taskDynamic);
     const listOfTasksDynamicInProgressUPD = team.listOfTasksDynamicInProgress.filter(
         (tsk) => {
-            tsk !== taskDynamic.taskStaticName;
+            tsk.taskStaticName !== taskDynamic.taskStaticName;
         }
     );
     team.listOfTasksDynamicInProgress = listOfTasksDynamicInProgressUPD;

@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import { Category } from "../emums";
+import { TaskCategory } from "../emums";
 import { ITaskStatic } from "./taskStatic.model";
 
 export interface ITaskDynamic {
@@ -10,7 +10,7 @@ export interface ITaskDynamic {
     solution?: string;
 }
 
-const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
+export const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
     taskStaticName: {
         type: String,
         required: true,

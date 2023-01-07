@@ -1,10 +1,10 @@
-import { gradeTask, submitTask, takeTask } from "./src/manager/team.manager";
+import { teamManager } from "./src/manager/team.manager";
 
 const authToken =
     "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFvLWZ5Yl9WajBNemh4REFVTmVLVSJ9.eyJodHRwOi8vbG9jYWxob3N0OjY2NjYvcm9sZXMiOlsiQ29tcGV0aXRpb24gYWRtaW5pc3RyYXRvciIsIlBhcnRpY2lwYW50IiwiU3lzdGVtIGFkbWluaXN0cmF0b3IiXSwiaXNzIjoiaHR0cHM6Ly9kZXYteTRiZzd0YWRrZHgwczd4Ni51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjNiMzBkNDhmNzFmNGM1OGVkZjllZTc3IiwiYXVkIjpbImh0dHA6Ly9sb2NhbGhvc3Q6NjY2NiIsImh0dHBzOi8vZGV2LXk0Ymc3dGFka2R4MHM3eDYudXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTY3MzAzNTcxOSwiZXhwIjoxNjczMTIyMTE5LCJhenAiOiI5Vm8zT1pqSXpPaTBYcG5yd0hQU2FhTThFempOcHFrRCIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJjcmVhdGU6dGFza1N0YXRpYyIsImRlbGV0ZTp0YXNrU3RhdGljIiwicmVhZDp0YXNrU3RhdGljIiwidXBkYXRlOnRhc2tTdGF0aWNcdCJdfQ.KneuJQ1Xh0qdb8MP4l3nSg0fSU-zss8cVhePUeTLC0nJwmZDuW0GqsLG04D7aieB-mjmTF7hFiohv2FpJ_fYSDLjeJD5GLOq14CctPDBMzGHWp40Px9izU5IphFTCgxsqDSNP0SNQxYJoaWcFSm1T8m3U8aJh8f66NmOYG_TZO80wiMPjjlvgghqZN44MR0oQRIX9EPBRxVs7yERXXK53_RIhwHoaqeaRfTZVRSJlSLWDocrhrUINKUQ7DE1FIqhv9EOgcOp_3wk1zyaeG-qXLr7mXPCAFyrBuuRyylLpdTB9Ew9bqo9_z6gUmIgN0vV2VFm2vSnbhOMziUIuYS6kA";
 
-//takeTask(authToken, "Calculator application", ["Prtp 1", "Prtp 2", "Prtp 3"]);
+//teamManager.takeTask(authToken, "Calculator application", ["Prtp 1", "Prtp 2", "Prtp 3"]);
 
-//submitTask(authToken, "Calculator application");
+//teamManager.submitTask(authToken, "Calculator application");
 
-gradeTask(authToken, "Calculator application", 80);
+teamManager.gradeTask(authToken, "Calculator application", 80);

@@ -4,7 +4,12 @@ import { Host, Port, HTTPRequestType } from "../emums";
 import { IDashboard, IOptions } from "../entities";
 import { ITaskDynamic } from "../models/taskDynamic.model";
 import { ITaskStatic, taskStaticModel } from "../models/taskStatic.model";
-import { getDocuments, postDocument } from "../services/request.service";
+import { ITeam } from "../models/team.model";
+import {
+    getDocumentsRequest,
+    postDocumentRequest,
+    updateDocumentFieldsRequest,
+} from "../services/request.service";
 
 interface ITeamManager {
     takeTask(
@@ -32,7 +37,7 @@ export const takeTask = async function (
         //  Get TaskStatic by name
 
         const taskStatic = ((
-            await getDocuments(
+            await getDocumentsRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/taskStatic/readByField`,
                 { fieldTitle: "name", filedValue: taskStaticName }
@@ -51,13 +56,96 @@ export const takeTask = async function (
                 collaborators: collaborators,
             };
 
-            await postDocument(
+            await postDocumentRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/taskDynamic/create`,
                 JSON.stringify(taskDynamic)
             );
+            //  Get team by name
+            // Assumption:
+            const teamName = "Popcorns";
 
-            //  Update team
+            let team = ((
+                await getDocumentsRequest(
+                    authToken,
+                    `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
+                    { fieldTitle: "name", filedValue: teamName }
+                )
+            )[0] as unknown) as ITeam;
+            team.listOfTasksDynamicInProgress.push(taskDynamic.taskStaticName);
+            team.openedTasksNumber += 1;
+            team.potentionalPoints += taskStatic.points;
+
+            updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+                [
+                    {
+                        fieldTitle: "listOfTasksDynamic",
+                        filedValue: team.listOfTasksDynamicInProgress,
+                    },
+                    {
+                        fieldTitle: "openedTasksNumber",
+                        filedValue: team.openedTasksNumber,
+                    },
+                    {
+                        fieldTitle: "potentionalPoints",
+                        filedValue: team.potentionalPoints,
+                    },
+                ]
+            );
         }
     });
+};
+
+export const submitTask = async function (
+    authToken: string,
+    taskDynamicName: string
+): Promise<void> {
+    //  Get task dynamic from
+    const taskDynamic = ((
+        await getDocumentsRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/taskDynamic/readByField`,
+            { fieldTitle: "name", filedValue: taskDynamicName }
+        )
+    )[0] as unknown) as ITaskDynamic;
+
+    const teamName = "Popcorns";
+    let team = ((
+        await getDocumentsRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
+            { fieldTitle: "name", filedValue: teamName }
+        )
+    )[0] as unknown) as ITeam;
+
+    //  Update team
+    team.listOfTasksDynamicSumbitted.push(taskDynamic.taskStaticName);
+    const listOfTasksDynamicInProgressUPD = team.listOfTasksDynamicInProgress.filter(
+        (tsk) => {
+            tsk !== taskDynamic.taskStaticName;
+        }
+    );
+    team.listOfTasksDynamicInProgress = listOfTasksDynamicInProgressUPD;
+    team.openedTasksNumber -= 1;
+
+    updateDocumentFieldsRequest(
+        authToken,
+        `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+        [
+            {
+                fieldTitle: "listOfTasksDynamicSumbitted",
+                filedValue: team.listOfTasksDynamicSumbitted,
+            },
+            {
+                fieldTitle: "openedTasksNumber",
+                filedValue: team.openedTasksNumber,
+            },
+            {
+                fieldTitle: "listOfTasksDynamicInProgress",
+                filedValue: team.listOfTasksDynamicInProgress,
+            },
+        ]
+    );
 };

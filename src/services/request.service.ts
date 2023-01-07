@@ -5,7 +5,7 @@ import { IOptions } from "../entities";
 import fetch from "node-fetch";
 import { HTTPRequestType } from "../emums";
 
-export const getDocumentField = function (
+export const getDocumentFieldRequest = function (
     field: string,
     options: IOptions
 ): Promise<string> {
@@ -41,7 +41,7 @@ export const getDocumentField = function (
     });
 };
 
-export const getDocuments = async function (
+export const getDocumentsRequest = async function (
     authToken: string,
     GETPath: string,
     targetFields: IField
@@ -75,26 +75,44 @@ export const getDocuments = async function (
     }
 };
 
-export const updateDocumentFields = function (
-    options: IOptions,
-    updateData: [{ field: string; value: string }]
-): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-        const response = await fetch(`${options.host}${options.path}`, {
-            method: options.method,
-            body: JSON.stringify({
-                name: "John Smith",
-                job: "manager",
-            }),
+export const updateDocumentFieldsRequest = async function (
+    authToken: string,
+    PUTPath: string,
+    targetFields: IField[]
+) {
+    let reqPath = encodeURI(`${PUTPath}`);
+    try {
+        const response = await fetch(reqPath, {
+            method: "PUT",
+            body: JSON.stringify(targetFields),
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
+                Authorization: `Bearer ${authToken}`,
             },
         });
-    });
+
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        console.log("result is: ", JSON.stringify(result, null, 4));
+
+        return result;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log("error message: ", error.message);
+            return error.message;
+        } else {
+            console.log("unexpected error: ", error);
+            return "An unexpected error occurred";
+        }
+    }
 };
 
-export const postDocument = async function (
+export const postDocumentRequest = async function (
     authToken: string,
     POSTPath: string,
     document: string

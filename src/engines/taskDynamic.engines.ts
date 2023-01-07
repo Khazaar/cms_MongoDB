@@ -1,7 +1,10 @@
 import { ITaskDynamic, taskDynamicModel } from "../models/taskDynamic.model";
 import { IOptions } from "../entities";
 import { Host, HTTPRequestType, Port } from "../emums";
-import { getDocumentField, postDocument } from "../services/request.service";
+import {
+    getDocumentFieldRequest,
+    postDocumentRequest,
+} from "../services/request.service";
 
 export const createTaskDynamic = async function (
     taskDynamic: ITaskDynamic

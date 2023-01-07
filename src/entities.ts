@@ -29,5 +29,5 @@ export interface IDashboard {
 
 export interface IField {
     fieldTitle: string;
-    filedValue: string;
+    filedValue: string | string[] | number;
 }

@@ -5,8 +5,9 @@ import { Category } from "../emums";
 export interface ITeam {
     name: string;
     icon: string;
-    listOfParticipants: [string];
-    listOfTasksDynamic: [string];
+    listOfParticipants: string[];
+    listOfTasksDynamicInProgress: string[];
+    listOfTasksDynamicSumbitted: string[];
     finishedTasksNumber: number;
     openedTasksNumber: number;
     earnedPoints: number;
@@ -21,7 +22,8 @@ const teamSchema = new mongoose.Schema<ITeam>({
     },
     icon: { type: String, required: true },
     listOfParticipants: { type: [String], required: true },
-    listOfTasksDynamic: { type: [String], required: true },
+    listOfTasksDynamicInProgress: { type: [String], required: true },
+    listOfTasksDynamicSumbitted: { type: [String], required: true },
     finishedTasksNumber: { type: Number, required: true },
     openedTasksNumber: { type: Number, required: true },
     earnedPoints: { type: Number, required: true },

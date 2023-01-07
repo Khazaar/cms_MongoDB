@@ -1,9 +1,9 @@
 import * as mongoose from "mongoose";
 import { TaskCategory } from "../emums";
-import { ITaskStatic } from "./taskStatic.model";
+import { ITaskStatic, taskStaticSchema } from "./taskStatic.model";
 
 export interface ITaskDynamic {
-    taskStaticName: string;
+    taskStatic: ITaskStatic;
     startTime: Date;
     endTime?: Date;
     collaborators: string[];
@@ -11,8 +11,8 @@ export interface ITaskDynamic {
 }
 
 export const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
-    taskStaticName: {
-        type: String,
+    taskStatic: {
+        type: taskStaticSchema,
         required: true,
         unique: true,
     },

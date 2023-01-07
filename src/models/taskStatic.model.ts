@@ -12,7 +12,7 @@ export interface ITaskStatic {
     description: string;
 }
 
-const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
+export const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
     name: {
         type: String,
         required: true,

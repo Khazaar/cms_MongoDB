@@ -148,31 +148,33 @@ export const postDocumentRequest = async function (
     }
 };
 
-// export const postDocument = function (
-//     options: IOptions,
-//     postData: string
-// ): Promise<void> {
-//     return new Promise((resolve, reject) => {
-//         let req = http.request(options, (res) => {
-//             let output = "";
-//             console.log("rest::", options.host + ":" + res.statusCode);
-//             res.setEncoding("utf8");
+export const getIDToken = async function (authToken: string) {
+    const reqPath = encodeURI(`http://${process.env.AUTH0_DOMAIN}/userinfo`);
+    try {
+        //  const response: Response
+        const response = await fetch(reqPath, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${authToken}`,
+            },
+        });
 
-//             res.on("data", function (chunk) {
-//                 output += chunk;
-//             });
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
 
-//             res.on("end", () => {
-//                 console.log("Body: ", JSON.parse(postData));
-//             });
-//         });
-//         req.on("error", (err) => {
-//             console.error("rest::request", err);
-//             reject(err);
-//         });
-//         req.write(postData);
-//         req.end(() => {
-//             resolve();
-//         });
-//     });
-// };
+        const result = await response.json();
+        console.log("result is: ", JSON.stringify(result, null, 4));
+        return result;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log("error message: ", error.message);
+            return error.message;
+        } else {
+            console.log("unexpected error: ", error);
+            return "An unexpected error occurred";
+        }
+    }
+};

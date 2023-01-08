@@ -1,4 +1,3 @@
-// Create dashbiard
 import { Host, Port, HTTPRequestType } from "../emums";
 import { IDashboard, IOptions } from "../entities";
 import { ITaskDynamic } from "../models/taskDynamic.model";
@@ -14,23 +13,49 @@ import multer from "multer";
 import { DocumentService } from "../services/document.service";
 import { imageModel } from "../models/image.model";
 
-interface ITeamManager {
-    takeTask(
-        taskStaticName: string,
-        collaboraters: string[]
-    ): Promise<ITaskDynamic>; // For team participant
-    //check Number of parallel tasks
-    // update time
-    // update potentional points
-    // update participantsList
-    createDashboard(): Promise<IDashboard>; // Team member
-    submitTask(taskDynamic: ITaskDynamic): Promise<void>; // Team member
-    // update time
-    // decrease openedTasksNumber
-
-    checkTask(taskDynamic: ITaskDynamic): Promise<void>; //CA
-}
 export abstract class teamManager {
+    static createTeam = async function (
+        authToken: string,
+        teamName: string,
+        listOfParticipantsEmail: string[]
+    ) {
+        for (const usrEmail of listOfParticipantsEmail) {
+            const usr = await getDocumentsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/user/readByField`,
+                { fieldTitle: "email", filedValue: usrEmail }
+            );
+            if (usr == undefined) {
+                throw new Error("Parlicipant is absent");
+            }
+        }
+
+        const team: ITeam = {
+            name: teamName,
+            listOfParticipants: listOfParticipantsEmail,
+            finishedTasksNumber: 0,
+            openedTasksNumber: 0,
+            icon: "",
+            listOfTasksDynamicInProgress: [],
+            listOfTasksDynamicSumbitted: [],
+            earnedPoints: 0,
+            potentionalPoints: 0,
+        };
+        //  Update competition.teams: push team.name
+
+        await postDocumentRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/team/create`,
+            JSON.stringify(team)
+        );
+        for (const usrEmail of listOfParticipantsEmail) {
+            await updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/user/updateByField?field=email&value=${usrEmail}`,
+                [{ fieldTitle: "teamName", filedValue: teamName }]
+            );
+        }
+    };
     static takeTask = async function (
         authToken: string,
         taskStaticName: string,

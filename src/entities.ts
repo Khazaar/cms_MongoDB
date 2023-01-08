@@ -1,3 +1,4 @@
+import { StringLiteral } from "typescript";
 import { AppError, Host, HTTPRequestType, Port } from "./emums";
 import { ITaskDynamic } from "./models/taskDynamic.model";
 
@@ -31,4 +32,11 @@ export interface IField {
     fieldTitle: string;
     filedValue: any;
 }
+
+export interface IUserAuth {
+    email: string;
+    ["http://localhost:6666/roles"]: string;
+}
+
 //filedValue: string | string[] | number | ITaskDynamic[] | Date | Buffer;
+//openid profile email permissions

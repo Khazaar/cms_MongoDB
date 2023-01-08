@@ -16,7 +16,7 @@ export const taskStaticSchema = new mongoose.Schema<ITaskStatic>({
     name: {
         type: String,
         required: true,
-        unique: true,
+        unique: false,
     },
     category: [String],
     durationLimit: { type: Number, required: true },

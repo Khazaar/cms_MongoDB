@@ -3,6 +3,10 @@ import { Constants } from "../constants";
 
 export class ConnectionHelper {
     public static async connectToDatabase() {
-        await connect(Constants.cmsDBConnectionString);
+        try {
+            await connect(Constants.cmsDBConnectionString);
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

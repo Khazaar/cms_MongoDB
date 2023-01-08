@@ -14,7 +14,7 @@ export const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
     taskStatic: {
         type: taskStaticSchema,
         required: true,
-        unique: true,
+        unique: false,
     },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: false },

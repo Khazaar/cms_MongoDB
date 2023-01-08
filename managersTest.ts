@@ -7,4 +7,6 @@ const authToken =
 
 //teamManager.submitTask(authToken, "Calculator application");
 
-teamManager.gradeTask(authToken, "Calculator application", 80);
+//teamManager.gradeTask(authToken, "Calculator application", 80);
+
+teamManager.setTeamIcon("authToken");

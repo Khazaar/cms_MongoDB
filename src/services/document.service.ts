@@ -1,8 +1,8 @@
 import { Model, Document } from "mongoose";
 import { IField } from "../entities";
 
-export class DocumentService {
-    public async createDocument(
+export abstract class DocumentService {
+    public static async createDocument(
         model: Model<any>,
         doc: Document
     ): Promise<any> {
@@ -16,7 +16,9 @@ export class DocumentService {
         });
     }
 
-    public async readDocuments(model: Model<any>): Promise<Model<any>[]> {
+    public static async readDocuments(
+        model: Model<any>
+    ): Promise<Model<any>[]> {
         return new Promise(async (resolve, reject) => {
             try {
                 const docs = await model.find();
@@ -27,7 +29,7 @@ export class DocumentService {
         });
     }
 
-    public async readDocumentByFields(
+    public static async readDocumentByFields(
         model: Model<any>,
         filterField: IField
     ): Promise<Model<any>[]> {
@@ -43,7 +45,7 @@ export class DocumentService {
         });
     }
 
-    public async deleteDocumentByFields(
+    public static async deleteDocumentByFields(
         model: Model<any>,
         filterField: IField
     ): Promise<void> {
@@ -59,7 +61,7 @@ export class DocumentService {
         });
     }
 
-    public async updateDocumentByFields(
+    public static async updateDocumentByFields(
         model: Model<any>,
         filterField: IField,
         updateFields: IField[]

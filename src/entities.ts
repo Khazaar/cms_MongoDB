@@ -29,5 +29,6 @@ export interface IDashboard {
 
 export interface IField {
     fieldTitle: string;
-    filedValue: string | string[] | number | ITaskDynamic[];
+    filedValue: any;
 }
+//filedValue: string | string[] | number | ITaskDynamic[] | Date | Buffer;

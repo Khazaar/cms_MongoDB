@@ -3,12 +3,16 @@ import { Host, Port, HTTPRequestType } from "../emums";
 import { IDashboard, IOptions } from "../entities";
 import { ITaskDynamic } from "../models/taskDynamic.model";
 import { ITaskStatic, taskStaticModel } from "../models/taskStatic.model";
-import { ITeam } from "../models/team.model";
+import { ITeam, teamModel } from "../models/team.model";
 import {
     getDocumentsRequest,
     postDocumentRequest,
     updateDocumentFieldsRequest,
 } from "../services/request.service";
+import fs from "fs";
+import multer from "multer";
+import { DocumentService } from "../services/document.service";
+import { imageModel } from "../models/image.model";
 
 interface ITeamManager {
     takeTask(
@@ -127,6 +131,7 @@ export abstract class teamManager {
         team.listOfTasksDynamicInProgress = listOfTasksDynamicInProgressUPD;
         team.openedTasksNumber -= 1;
         targetTaskDynamic.solution = solution;
+        targetTaskDynamic.endTime = new Date();
 
         updateDocumentFieldsRequest(
             authToken,
@@ -147,6 +152,10 @@ export abstract class teamManager {
                 {
                     fieldTitle: "solution",
                     filedValue: solution,
+                },
+                {
+                    fieldTitle: "targetTaskDynamic.endTime",
+                    filedValue: targetTaskDynamic.endTime,
                 },
             ]
         );
@@ -183,7 +192,7 @@ export abstract class teamManager {
                 }
             );
             team.listOfTasksDynamicSumbitted = listOfTasksDynamicSumbittedUPD;
-            team.openedTasksNumber -= 1;
+            //team.openedTasksNumber -= 1;
             team.earnedPoints +=
                 targetTaskDynamic.taskStatic.points * (gradePercent / 100);
 
@@ -248,5 +257,22 @@ export abstract class teamManager {
                 },
             ]
         );
+    };
+    static setTeamIcon = async function (authToken: string) {
+        const multerStorage = multer.memoryStorage();
+        const upload = multer({ storage: multerStorage });
+        //upload.single().
+        const path = "data/images/logo2.jpg";
+        var imageFile = await fs.readFileSync(path);
+
+        const image = { data: imageFile, contentType: "image/jpg" };
+        const imageDoc = new imageModel(image);
+        //const savedImage = await imageModel.create(image);
+        try {
+            imageDoc.save();
+        } catch (e) {
+            console.log(e);
+        }
+        //await imageModel.create(image);
     };
 }

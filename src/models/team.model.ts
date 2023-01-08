@@ -20,14 +20,22 @@ const teamSchema = new mongoose.Schema<ITeam>({
         required: true,
         unique: true,
     },
-    icon: { type: String, required: true },
-    listOfParticipants: { type: [String], required: true },
-    listOfTasksDynamicInProgress: { type: [taskDynamicSchema], required: true },
-    listOfTasksDynamicSumbitted: { type: [taskDynamicSchema], required: true },
-    finishedTasksNumber: { type: Number, required: true },
-    openedTasksNumber: { type: Number, required: true },
-    earnedPoints: { type: Number, required: true },
-    potentionalPoints: { type: Number, required: true },
+    icon: {
+        data: Buffer,
+        contentType: String,
+        required: false,
+    },
+    listOfParticipants: { type: [String], required: true, sparse: true },
+    listOfTasksDynamicInProgress: {
+        type: [taskDynamicSchema],
+        required: false,
+        sparse: true,
+    },
+    listOfTasksDynamicSumbitted: { type: [taskDynamicSchema], required: false },
+    finishedTasksNumber: { type: Number, required: false },
+    openedTasksNumber: { type: Number, required: false },
+    earnedPoints: { type: Number, required: false },
+    potentionalPoints: { type: Number, required: false },
 });
 
 export const teamModel = mongoose.model<ITeam>("team", teamSchema, "team");

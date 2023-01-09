@@ -10,7 +10,6 @@ import {
 } from "../services/request.service";
 import fs from "fs";
 import multer from "multer";
-import { DocumentService } from "../services/document.service";
 import { imageModel } from "../models/image.model";
 
 export abstract class teamManager {
@@ -58,6 +57,7 @@ export abstract class teamManager {
     };
     static takeTask = async function (
         authToken: string,
+        teamName: string,
         taskStaticName: string,
         collaborators: string[]
     ) {
@@ -74,16 +74,14 @@ export abstract class teamManager {
         if (taskStatic == undefined) {
             throw new Error("Task static nod found");
         } else {
-            console.log(`Selected Task Static is:`);
-            console.log(taskStatic);
+            //console.log(`Selected Task Static is:`);
+            //console.log(taskStatic);
             //  Create TaskDynamic
             const taskDynamic: ITaskDynamic = {
                 taskStatic: taskStatic,
                 startTime: new Date(),
                 collaborators: collaborators,
             };
-
-            const teamName = "Popcorns2";
 
             let team = ((
                 await getDocumentsRequest(

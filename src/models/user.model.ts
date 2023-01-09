@@ -10,7 +10,7 @@ export interface IUserDB {
     teamName?: string;
 }
 
-const teamSchema = new mongoose.Schema<IUserDB>({
+const userSchema = new mongoose.Schema<IUserDB>({
     email: {
         type: String,
         required: true,
@@ -36,4 +36,4 @@ const teamSchema = new mongoose.Schema<IUserDB>({
     },
 });
 
-export const userModel = mongoose.model<IUserDB>("user", teamSchema, "user");
+export const userModel = mongoose.model<IUserDB>("user", userSchema, "user");

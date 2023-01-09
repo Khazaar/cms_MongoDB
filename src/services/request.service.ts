@@ -178,3 +178,5 @@ export const getIDToken = async function (authToken: string) {
         }
     }
 };
+
+export const checkUserInTeam = async function (authToken: string) {};

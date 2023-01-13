@@ -5,8 +5,10 @@ import teamRoutes from "./routes/team.CRUD.routes";
 import userRoutes from "./routes/user.CRUD.routes";
 import teamManagerRoutes from "./routes/team.manager.routes";
 import { checkJwt } from "./middleware/authz.middleware";
+import cors from "cors";
 
 const app: Express = express();
+app.use(cors());
 // Auth
 app.use(checkJwt);
 app.use(((err, req, res, next) => {

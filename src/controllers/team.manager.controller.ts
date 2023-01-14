@@ -6,20 +6,38 @@ import { Host, Port } from "../emums";
 import { ITeam } from "../models/team.model";
 import { IUserDB, userModel } from "../models/user.model";
 import { DocumentService } from "../services/document.service";
+import { ITaskStatic } from "../models/taskStatic.model";
 
+//  We perform existance check in controllers, business ligic - in managers. In controller We transform strings to object
 const createTeam = async (req: Request, res: Response, next: NextFunction) => {
+    //  Parce  request body
     const authToken = (req.headers.authorization as string).slice(7);
     const teamName = req.body.teamName as string;
     const listOfParticipantsEmail = req.body
         .listOfParticipantsEmail as string[];
+
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
-    console.log(IDToken["http://localhost:6666/roles"]);
+    //console.log(IDToken["http://localhost:6666/roles"]);
+    const listOfParticipants: IUserDB[] = [];
+
+    //  Check that participants are in database
+    for (const usrEmail of listOfParticipantsEmail) {
+        const usr = ((await getDocumentsRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/user/readByField`,
+            { fieldTitle: "email", filedValue: usrEmail }
+        )) as IUserDB[])[0];
+        if (usr == undefined) {
+            throw new Error("Parlicipant is absent");
+        }
+        listOfParticipants.push(usr);
+    }
 
     try {
-        await teamManager.createTeam(
+        const newTeam = await teamManager.createTeam(
             authToken,
             teamName,
-            listOfParticipantsEmail
+            listOfParticipants
         );
         return res.status(200).json(`Team ${teamName} has been created`);
     } catch (error) {
@@ -28,18 +46,29 @@ const createTeam = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const takeTask = async (req: Request, res: Response, next: NextFunction) => {
+    //  Parce  request body
     const authToken = (req.headers.authorization as string).slice(7);
     const taskName = req.body.taskName as string;
     const teamName = req.body.teamName as string;
-    const collaborators = req.body.collaborators as string[];
+    const collaboratorsEmails = req.body.collaboratorsEmails as string[];
     //const decoded = jwt_decode(token);
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
-    const userEmail = IDToken.email;
-    const userDB = ((await DocumentService.readDocumentByFields(userModel, {
-        fieldTitle: "email",
-        filedValue: userEmail,
-    })) as unknown) as IUserDB;
+    const collaborators: IUserDB[] = [];
 
+    //  Check that participants are in database
+    for (const usrEmail of collaboratorsEmails) {
+        const usr = ((await getDocumentsRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/user/readByField`,
+            { fieldTitle: "email", filedValue: usrEmail }
+        )) as IUserDB[])[0];
+        if (usr == undefined) {
+            throw new Error("Collaborator is absent");
+        }
+        collaborators.push(usr);
+    }
+
+    //  Get team
     const team = ((
         await getDocumentsRequest(
             authToken,
@@ -51,15 +80,26 @@ const takeTask = async (req: Request, res: Response, next: NextFunction) => {
     if (team == undefined) {
         return res.status(500).send("Team does not exists");
     }
-    if (!team.listOfParticipants.includes(userEmail)) {
-        return res.status(500).send("User is not a team member");
+    // Get Task Static
+    const taskStatic = ((
+        await getDocumentsRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/taskStatic/readByField`,
+            { fieldTitle: "name", filedValue: taskName }
+        )
+    )[0] as unknown) as ITaskStatic;
+
+    if (taskStatic == undefined) {
+        throw new Error("Task static nod found");
     }
 
+    // Check that task is not already in progress
+
     try {
-        await teamManager.takeTask(
+        const newTask = await teamManager.takeTask(
             authToken,
-            teamName,
-            taskName,
+            team,
+            taskStatic,
             collaborators
         );
         return res.status(200).json(`Task ${taskName} has been taken`);
@@ -72,10 +112,19 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
     const authToken = (req.headers.authorization as string).slice(7);
     const taskName = req.body.taskName as string;
     const solution = req.body.solution as string;
-    const teamName = req.body.teamName as string;
+    //const teamName = req.body.teamName as string;
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
     const userEmail = IDToken.email;
+    const usr = ((await getDocumentsRequest(
+        authToken,
+        `http://${Host.localhost}:${Port.expressLocalEgor}/user/readByField`,
+        { fieldTitle: "email", filedValue: userEmail }
+    )) as IUserDB[])[0];
+    if (usr == undefined) {
+        throw new Error("Collaborator is absent");
+    }
 
+    const teamName = usr.teamName;
     const team = ((
         await getDocumentsRequest(
             authToken,
@@ -87,12 +136,21 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
     if (team == undefined) {
         return res.status(500).send("Team does not exists");
     }
-    if (!team.listOfParticipants.includes(userEmail)) {
-        return res.status(500).send("User is not a team member");
-    }
 
+    const taskDynamic = team.listOfTasksDynamicInProgress.filter(
+        (tsk) => tsk.taskStatic.name == taskName
+    )[0];
+
+    if (taskDynamic == undefined) {
+        return res.status(500).send("No requested task in progress");
+    }
     try {
-        await teamManager.submitTask(authToken, taskName, solution);
+        const submittedTask = await teamManager.submitTask(
+            authToken,
+            team,
+            taskDynamic,
+            solution
+        );
         return res.status(200).json(`Task ${taskName} has been submitted`);
     } catch (error) {
         return res.status(500).send((error as Error).message);
@@ -100,11 +158,31 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const gradeTask = async (req: Request, res: Response, next: NextFunction) => {
+    //  Parce request body
     const authToken = (req.headers.authorization as string).slice(7);
     const taskName = req.body.taskName as string;
     const gradePercent = req.body.gradePercent as number;
+    const teamName = req.body.teamName as string;
+
+    const team = ((
+        await getDocumentsRequest(
+            authToken,
+            `http://${Host.localhost}:${Port.expressLocalEgor}/team/readByField`,
+            { fieldTitle: "name", filedValue: teamName }
+        )
+    )[0] as unknown) as ITeam;
+
+    const taskDynamic = team.listOfTasksDynamicSumbitted.filter(
+        (tsk) => tsk.taskStatic.name == taskName
+    )[0];
+
     try {
-        await teamManager.gradeTask(authToken, taskName, gradePercent);
+        const gradedTask = await teamManager.gradeTask(
+            authToken,
+            team,
+            taskDynamic,
+            gradePercent
+        );
         return res
             .status(200)
             .json(`Task ${taskName} has been graded at ${gradePercent}`);

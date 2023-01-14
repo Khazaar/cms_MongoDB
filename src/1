@@ -5,6 +5,6 @@ RUN npm install npm@9.1.2
 RUN npm install
 RUN npm audit fix --force
 RUN npm install nodemon@2.0.20
-EXPOSE 6666
-ENV PORT=6666
+EXPOSE 2050
+ENV PORT=2050
 CMD npm run dev

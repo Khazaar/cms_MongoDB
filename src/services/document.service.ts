@@ -82,8 +82,8 @@ export abstract class DocumentService {
                 }
 
                 resolve(doc);
-            } catch {
-                reject();
+            } catch (error) {
+                reject(error);
             }
         });
     }

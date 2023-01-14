@@ -21,18 +21,18 @@ const userSchema = new mongoose.Schema<IUserDB>({
     },
     lastName: {
         type: String,
-        required: true,
-        unique: true,
+        required: false,
+        unique: false,
     },
     teamName: {
         type: String,
-        required: true,
-        unique: true,
+        required: false,
+        unique: false,
     },
     role: {
         type: [String],
-        required: true,
-        unique: true,
+        required: false,
+        unique: false,
     },
 });
 

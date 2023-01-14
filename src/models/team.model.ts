@@ -5,9 +5,10 @@ import { TaskCategory } from "../emums";
 export interface ITeam {
     name: string;
     icon: string;
-    listOfParticipants: string[];
+    listOfParticipantsEmail: string[];
     listOfTasksDynamicInProgress: ITaskDynamic[];
     listOfTasksDynamicSumbitted: ITaskDynamic[];
+    listOfTasksDynamicSolved: ITaskDynamic[];
     finishedTasksNumber: number;
     openedTasksNumber: number;
     earnedPoints: number;
@@ -25,13 +26,14 @@ const teamSchema = new mongoose.Schema<ITeam>({
         contentType: String,
         required: false,
     },
-    listOfParticipants: { type: [String], required: true, sparse: true },
+    listOfParticipantsEmail: { type: [String], required: true, sparse: true },
     listOfTasksDynamicInProgress: {
         type: [taskDynamicSchema],
         required: false,
         sparse: true,
     },
     listOfTasksDynamicSumbitted: { type: [taskDynamicSchema], required: false },
+    listOfTasksDynamicSolved: { type: [taskDynamicSchema], required: false },
     finishedTasksNumber: { type: Number, required: false },
     openedTasksNumber: { type: Number, required: false },
     earnedPoints: { type: Number, required: false },

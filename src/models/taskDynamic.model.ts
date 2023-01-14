@@ -6,8 +6,9 @@ export interface ITaskDynamic {
     taskStatic: ITaskStatic;
     startTime: Date;
     endTime?: Date;
-    collaborators: string[];
+    collaboratorEmails: string[];
     solution?: string;
+    points?: number;
 }
 
 export const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
@@ -18,8 +19,9 @@ export const taskDynamicSchema = new mongoose.Schema<ITaskDynamic>({
     },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: false },
-    collaborators: [String],
+    collaboratorEmails: [String],
     solution: { type: String, required: false },
+    points: { type: Number, required: false },
 });
 
 export const taskDynamicModel = mongoose.model<ITaskDynamic>(

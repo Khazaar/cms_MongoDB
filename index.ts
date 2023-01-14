@@ -7,7 +7,7 @@ import { Port } from "./src/emums";
 
 ConnectionHelper.connectToDatabase();
 
-const port = process.env.PORT as string; // != undefined process.env.PORT ? "6666"
+const port = process.env.PORT as string; // != undefined process.env.PORT ? "2050"
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });

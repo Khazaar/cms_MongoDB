@@ -35,7 +35,7 @@ export interface IField {
 
 export interface IUserAuth {
     email: string;
-    ["http://localhost:6666/roles"]: string;
+    ["http://localhost:2050/roles"]?: string;
 }
 
 //filedValue: string | string[] | number | ITaskDynamic[] | Date | Buffer;

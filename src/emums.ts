@@ -41,7 +41,7 @@ export enum Host {
 }
 
 export enum Port {
-    expressLocalEgor = 6666,
+    expressLocalEgor = 2050,
     azure = 0,
 }
 

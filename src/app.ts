@@ -4,6 +4,7 @@ import taskDynamicRoutes from "./routes/taskDynamic.routes";
 import teamRoutes from "./routes/team.CRUD.routes";
 import userRoutes from "./routes/user.CRUD.routes";
 import teamManagerRoutes from "./routes/team.manager.routes";
+import notificationManagerRoutes from "./routes/notification.manager.routes";
 import { checkJwt } from "./middleware/authz.middleware";
 import cors from "cors";
 
@@ -46,6 +47,7 @@ app.use("/taskDynamic", taskDynamicRoutes.router);
 app.use("/team", teamRoutes.router);
 app.use("/user", userRoutes.router);
 app.use("/teamManager", teamManagerRoutes.router);
+app.use("/notificationManager", notificationManagerRoutes.router);
 
 /** Error handling */
 app.use((req, res, next) => {

@@ -13,6 +13,9 @@ import {
 import fs from "fs";
 import multer from "multer";
 import { imageModel } from "../models/image.model";
+import { NotificationManager } from "./notification.manager";
+
+const notificationManager = new NotificationManager();
 export class teamManager {
     static async createTeam(
         authToken: string,
@@ -58,6 +61,7 @@ export class teamManager {
         } catch (error) {
             throw new Error(error as string);
         }
+        notificationManager.notifyTeamCreated(team);
         return team;
     }
 
@@ -100,6 +104,7 @@ export class teamManager {
                 },
             ]
         );
+        notificationManager.notifyTaskTaken(team, taskDynamic);
         return taskDynamic;
     }
 
@@ -139,6 +144,7 @@ export class teamManager {
                 },
             ]
         );
+        notificationManager.notifyTaskSubmitted(team, taskDynamic);
         return taskDynamic;
     }
 
@@ -182,6 +188,7 @@ export class teamManager {
                 },
             ]
         );
+        notificationManager.notifyTaskGraded(team, taskDynamic);
         return taskDynamic;
     }
 

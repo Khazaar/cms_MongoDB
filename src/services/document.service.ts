@@ -69,17 +69,23 @@ export abstract class DocumentService {
         return new Promise(async (resolve, reject) => {
             try {
                 let doc;
-                for (const fld of updateFields) {
-                    doc = await model.findOneAndUpdate(
-                        {
-                            [filterField.fieldTitle]: filterField.filedValue,
-                        },
-                        { [fld.fieldTitle]: fld.filedValue },
-                        {
-                            new: true,
-                        }
-                    );
-                }
+                //for (const fld of updateFields) {
+                // doc = await model.findOneAndUpdate(
+                //     {
+                //         [filterField.fieldTitle]: filterField.filedValue,
+                //     },
+                //     { [fld.fieldTitle]: fld.filedValue },
+                //     {
+                //         new: true,
+                //     }
+                // );
+                //}
+                doc = await model.findOneAndUpdate(
+                    {
+                        [filterField.fieldTitle]: filterField.filedValue,
+                    },
+                    updateFields
+                );
 
                 resolve(doc);
             } catch (error) {

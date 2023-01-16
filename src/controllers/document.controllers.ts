@@ -8,8 +8,11 @@ const createDocument = (model: Model<any>) => async (
     res: Response,
     next: NextFunction
 ) => {
-    console.log(`Creating new document for ${model.name}`);
+    console.log(`Creating new document for ${model.modelName}`);
     const body = req.body;
+    if (body._id != undefined) {
+        delete body._id;
+    }
     DocumentService.createDocument(model, body)
         .then((result: any) => {
             return res.status(200).json(result);
@@ -24,7 +27,7 @@ const readDocuments = (model: Model<any>) => async (
     res: Response,
     next: NextFunction
 ) => {
-    console.log(`Reading all documents from ${model.name}`);
+    console.log(`Reading all documents from ${model.modelName}`);
     const body = req.body;
     DocumentService.readDocuments(model)
         .then((result: any[]) => {
@@ -46,7 +49,7 @@ const readDocumentByFields = (model: Model<any>) => async (
     };
 
     console.log(
-        `Reading all documents from ${model.name} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
+        `Reading all documents from ${model.modelName} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
     DocumentService.readDocumentByFields(model, filterField)
         .then((result: any[]) => {
@@ -67,7 +70,7 @@ const deleteDocumentByFields = (model: Model<any>) => async (
         filedValue: req.query.value as string,
     };
     console.log(
-        `Deleting all documents from ${model.name} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
+        `Deleting all documents from ${model.modelName} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
     DocumentService.deleteDocumentByFields(model, filterField)
         .then(() => {
@@ -89,7 +92,7 @@ const updateDocumentByFields = (model: Model<any>) => async (
         filedValue: req.query.value as string,
     };
     console.log(
-        `Updating all documents from ${model.name} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
+        `Updating all documents from ${model.modelName} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
     DocumentService.updateDocumentByFields(model, filterField, updateFields)
         .then((doc) => {

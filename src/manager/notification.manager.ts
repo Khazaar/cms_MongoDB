@@ -6,8 +6,8 @@ import { format as prettyFormat } from "pretty-format";
 
 export class NotificationManager {
     private _bot: Telegraf<Context<Update>>;
-    private chatId = 293790727;
-
+    private chatIdStr = process.env.CHAT_ID;
+    private chatId: number = Number(this.chatIdStr);
     private options = {
         printFunctionName: false,
         highlight: true,

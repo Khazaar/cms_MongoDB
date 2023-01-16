@@ -53,10 +53,11 @@ export class teamManager {
                     [{ fieldTitle: "teamName", filedValue: teamName }]
                 );
             }
+            notificationManager.notifyTeamCreated(team);
         } catch (error) {
             throw new Error(error as string);
         }
-        notificationManager.notifyTeamCreated(team);
+
         return team;
     }
 
@@ -73,34 +74,40 @@ export class teamManager {
         };
 
         team.listOfTasksDynamicInProgress.push(taskDynamic);
-        team.openedTasksNumber += 1;
+
         team.potentionalPoints += taskStatic.points;
         // repair
         const numberOfParallel = 3;
         if (team.openedTasksNumber > numberOfParallel) {
             throw new Error("You have reached maximum number of tasks");
         }
+        team.openedTasksNumber += 1;
         //
 
-        updateDocumentFieldsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
-            [
-                {
-                    fieldTitle: "listOfTasksDynamicInProgress",
-                    filedValue: team.listOfTasksDynamicInProgress,
-                },
-                {
-                    fieldTitle: "openedTasksNumber",
-                    filedValue: team.openedTasksNumber,
-                },
-                {
-                    fieldTitle: "potentionalPoints",
-                    filedValue: team.potentionalPoints,
-                },
-            ]
-        );
-        notificationManager.notifyTaskTaken(team, taskDynamic);
+        try {
+            updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+                [
+                    {
+                        fieldTitle: "listOfTasksDynamicInProgress",
+                        filedValue: team.listOfTasksDynamicInProgress,
+                    },
+                    {
+                        fieldTitle: "openedTasksNumber",
+                        filedValue: team.openedTasksNumber,
+                    },
+                    {
+                        fieldTitle: "potentionalPoints",
+                        filedValue: team.potentionalPoints,
+                    },
+                ]
+            );
+            notificationManager.notifyTaskTaken(team, taskDynamic);
+        } catch (error) {
+            throw new Error(error as any);
+        }
+
         return taskDynamic;
     }
 
@@ -122,25 +129,29 @@ export class teamManager {
         taskDynamic.endTime = new Date();
         team.listOfTasksDynamicSumbitted.push(taskDynamic);
 
-        updateDocumentFieldsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
-            [
-                {
-                    fieldTitle: "listOfTasksDynamicSumbitted",
-                    filedValue: team.listOfTasksDynamicSumbitted,
-                },
-                {
-                    fieldTitle: "openedTasksNumber",
-                    filedValue: team.openedTasksNumber,
-                },
-                {
-                    fieldTitle: "listOfTasksDynamicInProgress",
-                    filedValue: team.listOfTasksDynamicInProgress,
-                },
-            ]
-        );
-        notificationManager.notifyTaskSubmitted(team, taskDynamic);
+        try {
+            updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+                [
+                    {
+                        fieldTitle: "listOfTasksDynamicSumbitted",
+                        filedValue: team.listOfTasksDynamicSumbitted,
+                    },
+                    {
+                        fieldTitle: "openedTasksNumber",
+                        filedValue: team.openedTasksNumber,
+                    },
+                    {
+                        fieldTitle: "listOfTasksDynamicInProgress",
+                        filedValue: team.listOfTasksDynamicInProgress,
+                    },
+                ]
+            );
+            notificationManager.notifyTaskSubmitted(team, taskDynamic);
+        } catch (error) {
+            throw new Error(error as any);
+        }
         return taskDynamic;
     }
 
@@ -162,29 +173,33 @@ export class teamManager {
         team.earnedPoints += taskDynamic.points;
         team.listOfTasksDynamicSolved.push(taskDynamic);
 
-        updateDocumentFieldsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
-            [
-                {
-                    fieldTitle: "listOfTasksDynamicSumbitted",
-                    filedValue: team.listOfTasksDynamicSumbitted,
-                },
-                {
-                    fieldTitle: "listOfTasksDynamicSolved",
-                    filedValue: team.listOfTasksDynamicSolved,
-                },
-                {
-                    fieldTitle: "openedTasksNumber",
-                    filedValue: team.openedTasksNumber,
-                },
-                {
-                    fieldTitle: "earnedPoints",
-                    filedValue: team.earnedPoints,
-                },
-            ]
-        );
-        notificationManager.notifyTaskGraded(team, taskDynamic);
+        try {
+            updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+                [
+                    {
+                        fieldTitle: "listOfTasksDynamicSumbitted",
+                        filedValue: team.listOfTasksDynamicSumbitted,
+                    },
+                    {
+                        fieldTitle: "listOfTasksDynamicSolved",
+                        filedValue: team.listOfTasksDynamicSolved,
+                    },
+                    {
+                        fieldTitle: "openedTasksNumber",
+                        filedValue: team.openedTasksNumber,
+                    },
+                    {
+                        fieldTitle: "earnedPoints",
+                        filedValue: team.earnedPoints,
+                    },
+                ]
+            );
+            notificationManager.notifyTaskGraded(team, taskDynamic);
+        } catch (error) {
+            throw new Error(error as any);
+        }
         return taskDynamic;
     }
 

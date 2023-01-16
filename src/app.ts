@@ -1,5 +1,5 @@
 import express, { Express, ErrorRequestHandler } from "express";
-import taskStaticRoutes from "./routes/taskStatic.routes";
+import taskStaticRoutes from "./routes/taskStatic.CRUD.routes";
 import taskDynamicRoutes from "./routes/taskDynamic.routes";
 import teamRoutes from "./routes/team.CRUD.routes";
 import userRoutes from "./routes/user.CRUD.routes";

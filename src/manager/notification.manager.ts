@@ -15,7 +15,7 @@ export class NotificationManager {
 
     constructor() {
         const bot: Telegraf<Context<Update>> = new Telegraf(
-            process.env.BOT_TOKEN as string
+            process.env.BOT_TOKEN2 as string
         );
         this._bot = bot;
         this._bot.launch();

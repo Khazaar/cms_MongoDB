@@ -8,6 +8,7 @@ export interface IUserDB {
     lastName?: string;
     role?: string[];
     teamName?: string;
+    currentСompetitionName: string;
 }
 
 const userSchema = new mongoose.Schema<IUserDB>({
@@ -25,6 +26,11 @@ const userSchema = new mongoose.Schema<IUserDB>({
         unique: false,
     },
     teamName: {
+        type: String,
+        required: false,
+        unique: false,
+    },
+    currentСompetitionName: {
         type: String,
         required: false,
         unique: false,

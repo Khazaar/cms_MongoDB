@@ -4,7 +4,7 @@ import { TaskCategory } from "../emums";
 
 export interface ITeam {
     name: string;
-    icon: string;
+    icon?: string;
     listOfParticipantsEmail: string[];
     listOfTasksDynamicInProgress: ITaskDynamic[];
     listOfTasksDynamicSumbitted: ITaskDynamic[];

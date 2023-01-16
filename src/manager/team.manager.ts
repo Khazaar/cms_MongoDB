@@ -22,11 +22,6 @@ export class teamManager {
         teamName: string,
         listOfParticipants: IUserDB[]
     ): Promise<ITeam> {
-        // listOfParticipants: {(listOfParticipants: IUserDB[]) => {
-        //     const res:string[] = [];
-        //     listOfParticipants.forEach((p) => res.push(p.email))
-        //     return res;
-        // },
         //  Create blank team
         const team: ITeam = {
             name: teamName,
@@ -85,6 +80,7 @@ export class teamManager {
         if (team.openedTasksNumber > numberOfParallel) {
             throw new Error("You have reached maximum number of tasks");
         }
+        //
 
         updateDocumentFieldsRequest(
             authToken,

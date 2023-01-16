@@ -55,7 +55,7 @@ const takeTask = async (req: Request, res: Response, next: NextFunction) => {
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
     const collaborators: IUserDB[] = [];
 
-    //  Check that participants are in database
+    //  Check that collaborators are in database
     for (const usrEmail of collaboratorsEmails) {
         const usr = ((await getDocumentsRequest(
             authToken,

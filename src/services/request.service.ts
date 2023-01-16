@@ -1,6 +1,5 @@
 import { IField } from "./../entities";
 import http from "http";
-import { Model } from "mongoose";
 import { IOptions } from "../entities";
 import fetch from "node-fetch";
 import { HTTPRequestType } from "../emums";
@@ -55,7 +54,6 @@ export const getDocumentsRequest = async function (
             method: HTTPRequestType.GET,
             headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${authToken}`,
             },
         });

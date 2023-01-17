@@ -76,13 +76,13 @@ export const getDocumentsRequest = async function (
 export const updateDocumentFieldsRequest = async function (
     authToken: string,
     PUTPath: string,
-    targetFields: IField[]
+    updatedDocument: any
 ) {
     let reqPath = encodeURI(`${PUTPath}`);
     try {
         const response = await fetch(reqPath, {
             method: "PUT",
-            body: JSON.stringify(targetFields),
+            body: JSON.stringify(updatedDocument),
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",

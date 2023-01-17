@@ -81,7 +81,7 @@ const deleteDocumentByFields = (model: Model<any>) => async (
         });
 };
 
-const updateDocumentByFields = (model: Model<any>) => async (
+const updateDocumentFieldsByFields = (model: Model<any>) => async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -94,7 +94,37 @@ const updateDocumentByFields = (model: Model<any>) => async (
     console.log(
         `Updating all documents from ${model.modelName} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
     );
-    DocumentService.updateDocumentByFields(model, filterField, updateFields)
+    DocumentService.updateDocumentFieldsByFields(
+        model,
+        filterField,
+        updateFields
+    )
+        .then((doc) => {
+            return res.status(200).json(doc);
+        })
+        .catch((error) => {
+            return res.status(400).json(error);
+        });
+};
+
+const updateEntireDocumentByFields = (model: Model<any>) => async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const updatedDocument = req.body;
+    const filterField: IField = {
+        fieldTitle: req.query.field as string,
+        filedValue: req.query.value as string,
+    };
+    console.log(
+        `Updating all documents from ${model.modelName} with ${filterField.fieldTitle} equal to ${filterField.filedValue}`
+    );
+    DocumentService.updateEntireDocumentByFields(
+        model,
+        filterField,
+        updatedDocument
+    )
         .then((doc) => {
             return res.status(200).json(doc);
         })
@@ -108,5 +138,6 @@ export default {
     readDocuments,
     readDocumentByFields,
     deleteDocumentByFields,
-    updateDocumentByFields,
+    updateDocumentFieldsByFields,
+    updateEntireDocumentByFields,
 };

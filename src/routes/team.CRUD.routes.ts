@@ -14,7 +14,10 @@ router.get(
 );
 router.get("/readByField", controller.readDocumentByFields(teamModel));
 router.delete("/deleteByField", controller.deleteDocumentByFields(teamModel));
-router.put("/updateByField", controller.updateDocumentByFields(teamModel));
+router.put(
+    "/updateByField",
+    controller.updateEntireDocumentByFields(teamModel)
+);
 
 export default { router };
 //[checkPermissions([TaskStaticPermission.ReadTaskStatic])],

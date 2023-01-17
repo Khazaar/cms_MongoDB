@@ -61,7 +61,7 @@ export abstract class DocumentService {
         });
     }
 
-    public static async updateDocumentByFields(
+    public static async updateDocumentFieldsByFields(
         model: Model<any>,
         filterField: IField,
         updateFields: IField[]
@@ -86,6 +86,28 @@ export abstract class DocumentService {
                 //     },
                 //     updateFields
                 // );
+
+                resolve(doc);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+    public static async updateEntireDocumentByFields(
+        model: Model<any>,
+        filterField: IField,
+        updatedDocument: any
+    ): Promise<any> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let doc;
+
+                doc = await model.findOneAndUpdate(
+                    {
+                        [filterField.fieldTitle]: filterField.filedValue,
+                    },
+                    updatedDocument
+                );
 
                 resolve(doc);
             } catch (error) {

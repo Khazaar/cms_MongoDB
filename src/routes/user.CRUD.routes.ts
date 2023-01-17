@@ -12,7 +12,10 @@ router.get(
 );
 router.get("/readByField", controller.readDocumentByFields(userModel));
 router.delete("/deleteByField", controller.deleteDocumentByFields(userModel));
-router.put("/updateByField", controller.updateDocumentByFields(userModel));
+router.put(
+    "/updateByField",
+    controller.updateEntireDocumentByFields(userModel)
+);
 
 export default { router };
 //[checkPermissions([TaskStaticPermission.ReadTaskStatic])],

@@ -13,7 +13,7 @@ router.delete(
 );
 router.put(
     "/updateByField",
-    controller.updateDocumentByFields(taskDynamicModel)
+    controller.updateEntireDocumentByFields(taskDynamicModel)
 );
 
 export default { router };

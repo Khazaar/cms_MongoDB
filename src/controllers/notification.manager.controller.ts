@@ -14,7 +14,7 @@ const notifyTelegramTeam = async (
     next: NextFunction
 ) => {
     const teamName = req.body.teamName as string;
-    const taskName = req.body.task as string;
+    const taskName = req.body.taskName as string;
     const action = req.query.action as string;
     const authToken = (req.headers.authorization as string).slice(7);
     try {

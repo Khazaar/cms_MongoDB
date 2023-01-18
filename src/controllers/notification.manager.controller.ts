@@ -14,7 +14,7 @@ const notifyTelegramTeam = async (
     next: NextFunction
 ) => {
     const teamName = req.body.teamName as string;
-    const taskName = req.body.task as ITaskDynamic;
+    const taskName = req.body.task as string;
     const action = req.query.action as string;
     const authToken = (req.headers.authorization as string).slice(7);
     try {
@@ -27,15 +27,35 @@ const notifyTelegramTeam = async (
             )
         )[0] as unknown) as ITeam;
 
+        //  Get task
+
         switch (action) {
             case "notifyTeamCreated": {
                 notificationManager.notifyTeamCreated(team);
                 break;
             }
-            // case "notifyTaskSubmitted": {
-            //     notificationManager.notifyTaskSubmitted(team, task);
-            //     break;
-            // }
+            case "notifyTaskTaken": {
+                const task = team.listOfTasksDynamicInProgress.filter(
+                    (tsk) => tsk.taskStatic.name == taskName
+                )[0];
+                notificationManager.notifyTaskTaken(team, task);
+                break;
+            }
+
+            case "notifyTaskSubmitted": {
+                const task = team.listOfTasksDynamicSumbitted.filter(
+                    (tsk) => tsk.taskStatic.name == taskName
+                )[0];
+                notificationManager.notifyTaskSubmitted(team, task);
+                break;
+            }
+            case "notifyTaskGraded": {
+                const task = team.listOfTasksDynamicSolved.filter(
+                    (tsk) => tsk.taskStatic.name == taskName
+                )[0];
+                notificationManager.notifyTaskGraded(team, task);
+                break;
+            }
         }
 
         return res.status(200).json(`Notification sent`);

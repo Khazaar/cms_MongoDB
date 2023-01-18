@@ -183,13 +183,13 @@ export const postNotificationRequest = async function (
     body: any
 ) {
     const reqPath = encodeURI(
-        `http://${Host.localhost}:${Port.expressLocalEgor}/notificationManager${path}`
+        `http://${Host.localhost}:${Port.expressLocalEgor}/notificationManager/${path}`
     );
     try {
         //  const response: Response
         const response = await fetch(reqPath, {
             method: "POST",
-            body: body,
+            body: JSON.stringify(body),
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",

@@ -100,7 +100,11 @@ export class teamManager {
                     ["potentionalPoints"]: team.potentionalPoints,
                 }
             );
-            //notificationManager.notifyTaskTaken(team, taskDynamic);
+            await postNotificationRequest(
+                authToken,
+                "notifyTelegramTeam?action=notifyTaskTaken",
+                { teamName: team.name, taskName: taskStatic.name }
+            );
         } catch (error) {
             throw new Error(error as any);
         }
@@ -138,7 +142,11 @@ export class teamManager {
                         team.listOfTasksDynamicInProgress,
                 }
             );
-            //notificationManager.notifyTaskSubmitted(team, taskDynamic);
+            await postNotificationRequest(
+                authToken,
+                "notifyTelegramTeam?action=notifyTaskSubmitted",
+                { teamName: team.name, taskName: taskDynamic.taskStatic.name }
+            );
         } catch (error) {
             throw new Error(error as any);
         }
@@ -175,7 +183,11 @@ export class teamManager {
                     ["earnedPoints"]: team.earnedPoints,
                 }
             );
-            //notificationManager.notifyTaskGraded(team, taskDynamic);
+            await postNotificationRequest(
+                authToken,
+                "notifyTelegramTeam?action=notifyTaskGraded",
+                { teamName: team.name, taskName: taskDynamic.taskStatic.name }
+            );
         } catch (error) {
             throw new Error(error as any);
         }

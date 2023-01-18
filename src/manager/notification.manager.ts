@@ -30,34 +30,31 @@ export class NotificationManager {
     }
 
     async notifyTeamCreated(team: ITeam) {
-        await this._bot.telegram.sendMessage(
-            this.chatId,
-            "*Team has been created* 🚀\n",
-            { parse_mode: "MarkdownV2" }
-        );
-        let message = "";
-        message += `\n`;
-        message += `Team name: ${team.name}\n`;
-        message += `List of participants:\n`;
+        try {
+            let message = "Team has been created 🚀\n";
+            message += `\n`;
+            message += `Team name: ${team.name}\n`;
+            message += `List of participants:\n`;
 
-        team.listOfParticipantsEmail.forEach(async (element) => {
-            message += `${element}\n`;
-        });
-        await this._bot.telegram.sendMessage(this.chatId, message);
+            team.listOfParticipantsEmail.forEach(async (element) => {
+                message += `${element}\n`;
+            });
+            await this._bot.telegram.sendMessage(this.chatId, message);
+            await this.twitterClient.v2.tweet(message);
+        } catch (error) {
+            throw new Error(error as any);
+        }
     }
 
     async notifyTaskTaken(team: ITeam, task: ITaskDynamic) {
         try {
-            await this._bot.telegram.sendMessage(
-                this.chatId,
-                "*Task has been taken* ⏳\n",
-                { parse_mode: "MarkdownV2" }
-            );
-            let message = `Team: ${team.name}`;
+            let message = "Task has been taken ⏳\n";
             message += `\n`;
+            message += `Team: ${team.name}`;
             message += `Task: ${task.taskStatic.name}\n`;
             message += `Start time: ${task.startTime} \n`;
             await this._bot.telegram.sendMessage(this.chatId, message);
+            await this.twitterClient.v2.tweet(message);
         } catch (error) {
             throw new Error(error as any);
         }
@@ -65,16 +62,13 @@ export class NotificationManager {
 
     async notifyTaskSubmitted(team: ITeam, task: ITaskDynamic) {
         try {
-            await this._bot.telegram.sendMessage(
-                this.chatId,
-                "*Task has been submitted* 🔺\n",
-                { parse_mode: "MarkdownV2" }
-            );
-            let message = `Team: ${team.name}`;
+            let message = "*Task has been submitted* 🔺\n";
+            message += `Team: ${team.name}`;
             message += `\n`;
             message += `Task: ${task.taskStatic.name}\n`;
             message += `End time: ${task.endTime} \n`;
             await this._bot.telegram.sendMessage(this.chatId, message);
+            await this.twitterClient.v2.tweet(message);
         } catch (error) {
             throw new Error(error as any);
         }
@@ -82,16 +76,13 @@ export class NotificationManager {
 
     async notifyTaskGraded(team: ITeam, task: ITaskDynamic) {
         try {
-            await this._bot.telegram.sendMessage(
-                this.chatId,
-                "*Task has been graded* ✅\n",
-                { parse_mode: "MarkdownV2" }
-            );
-            let message = `Team ${team.name}`;
+            let message = "*Task has been graded* ✅\n";
+            message += `Team ${team.name}`;
             message += `\n`;
             message += `Task: ${task.taskStatic.name}\n`;
             message += `Points: ${task.points} \n`;
             await this._bot.telegram.sendMessage(this.chatId, message);
+            await this.twitterClient.v2.tweet(message);
         } catch (error) {
             throw new Error(error as any);
         }

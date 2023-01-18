@@ -114,7 +114,10 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
     const solution = req.body.solution as string;
     //const teamName = req.body.teamName as string;
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
-    const userEmail = IDToken.email;
+    let userEmail = IDToken.email;
+    if (userEmail!) {
+        userEmail = req.body.email as string; //  ИЗМЕНЕНИЯ
+    }
     const usr = ((await getDocumentsRequest(
         authToken,
         `http://${Host.localhost}:${Port.expressLocalEgor}/user/readByField`,

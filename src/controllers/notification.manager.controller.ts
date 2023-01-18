@@ -64,6 +64,16 @@ const notifyTelegramTeam = async (
     }
 };
 
+const notifyTweet = async (req: Request, res: Response, next: NextFunction) => {
+    const authToken = (req.headers.authorization as string).slice(7);
+    try {
+        notificationManager.notifyTwitter("Testing");
+        return res.status(200).json(`Notification sent`);
+    } catch (error) {
+        return res.status(500).send((error as Error).message);
+    }
+};
 export default {
     notifyTelegramTeam,
+    notifyTweet,
 };

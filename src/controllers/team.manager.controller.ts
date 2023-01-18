@@ -116,7 +116,7 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
     let userEmail = IDToken.email;
     if (userEmail == undefined) {
-        userEmail = req.body.email as string; //  ИЗМЕНЕНИЯ
+        userEmail = req.body.email as string;
     }
     const usr = ((await getDocumentsRequest(
         authToken,

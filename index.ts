@@ -1,10 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { Constants } from "./src/constants";
 import { ConnectionHelper } from "./src/helpers/connection.helper";
 import { app } from "./src/app";
-import { Port } from "./src/emums";
-import { NotificationManager } from "./src/manager/notification.manager";
 
 ConnectionHelper.connectToDatabase();
 

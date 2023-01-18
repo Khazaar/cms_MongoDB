@@ -8,6 +8,7 @@ import { ITeam, teamModel } from "../models/team.model";
 import {
     getDocumentsRequest,
     postDocumentRequest,
+    postNotificationRequest,
     updateDocumentFieldsRequest,
 } from "../services/request.service";
 import fs from "fs";
@@ -15,7 +16,7 @@ import multer from "multer";
 import { imageModel } from "../models/image.model";
 import { NotificationManager } from "./notification.manager";
 
-const notificationManager = new NotificationManager();
+//const notificationManager = new NotificationManager();
 export class teamManager {
     static async createTeam(
         authToken: string,
@@ -53,7 +54,11 @@ export class teamManager {
                     [{ fieldTitle: "teamName", filedValue: teamName }]
                 );
             }
-            notificationManager.notifyTeamCreated(team);
+            await postNotificationRequest(
+                authToken,
+                "notifyTelegramTeam?action=notifyTeamCreated",
+                { teamName: teamName }
+            );
         } catch (error) {
             throw new Error(error as string);
         }
@@ -95,7 +100,7 @@ export class teamManager {
                     ["potentionalPoints"]: team.potentionalPoints,
                 }
             );
-            notificationManager.notifyTaskTaken(team, taskDynamic);
+            //notificationManager.notifyTaskTaken(team, taskDynamic);
         } catch (error) {
             throw new Error(error as any);
         }
@@ -133,7 +138,7 @@ export class teamManager {
                         team.listOfTasksDynamicInProgress,
                 }
             );
-            notificationManager.notifyTaskSubmitted(team, taskDynamic);
+            //notificationManager.notifyTaskSubmitted(team, taskDynamic);
         } catch (error) {
             throw new Error(error as any);
         }
@@ -170,7 +175,7 @@ export class teamManager {
                     ["earnedPoints"]: team.earnedPoints,
                 }
             );
-            notificationManager.notifyTaskGraded(team, taskDynamic);
+            //notificationManager.notifyTaskGraded(team, taskDynamic);
         } catch (error) {
             throw new Error(error as any);
         }

@@ -2,7 +2,7 @@ import { IField } from "./../entities";
 import http from "http";
 import { IOptions } from "../entities";
 import fetch from "node-fetch";
-import { HTTPRequestType } from "../emums";
+import { Host, HTTPRequestType, Port } from "../emums";
 
 export const getDocumentFieldRequest = function (
     field: string,
@@ -173,6 +173,44 @@ export const getIDToken = async function (authToken: string) {
         } else {
             console.log("unexpected error: ", error);
             return "An unexpected error occurred";
+        }
+    }
+};
+
+export const postNotificationRequest = async function (
+    authToken: string,
+    path: string,
+    body: any
+) {
+    const reqPath = encodeURI(
+        `http://${Host.localhost}:${Port.expressLocalEgor}/notificationManager${path}`
+    );
+    try {
+        //  const response: Response
+        const response = await fetch(reqPath, {
+            method: "POST",
+            body: body,
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${authToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("result is: ", JSON.stringify(result, null, 4));
+        return result;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log("error message: ", error.message);
+            throw new Error(error.message);
+        } else {
+            console.log("unexpected error: ", error);
+            throw new Error("An unexpected error occurred");
         }
     }
 };

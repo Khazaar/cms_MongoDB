@@ -186,7 +186,6 @@ export const postNotificationRequest = async function (
         `http://${Host.localhost}:${Port.expressLocalEgor}/notificationManager/${path}`
     );
     try {
-        //  const response: Response
         const response = await fetch(reqPath, {
             method: "POST",
             body: JSON.stringify(body),

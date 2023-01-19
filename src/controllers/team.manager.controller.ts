@@ -115,8 +115,8 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
     //const teamName = req.body.teamName as string;
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
     let userEmail = IDToken.email;
-    if (userEmail!) {
-        userEmail = req.body.email as string; //  ИЗМЕНЕНИЯ
+    if (userEmail == undefined) {
+        userEmail = req.body.email as string;
     }
     const usr = ((await getDocumentsRequest(
         authToken,
@@ -124,7 +124,7 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
         { fieldTitle: "email", filedValue: userEmail }
     )) as IUserDB[])[0];
     if (usr == undefined) {
-        throw new Error("Collaborator is absent");
+        return res.status(500).send("Collaborator is absent");
     }
 
     const teamName = usr.teamName;

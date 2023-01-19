@@ -3,7 +3,8 @@ import controller from "../controllers/notification.manager.controller";
 
 const router: Router = express.Router();
 
-router.post("/notifyTeamCreated", controller.notifyTeamCreated);
+router.post("/notifyTelegramTeam", controller.notifyTelegramTeam);
+router.post("/notifyTwitter", controller.notifyTweet);
 
 export default { router };
 //[checkPermissions([TaskStaticPermission.ReadTaskStatic])],

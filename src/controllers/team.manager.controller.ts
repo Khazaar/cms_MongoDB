@@ -16,6 +16,7 @@ import { IUserDB, userModel } from "../models/user.model";
 import { ITaskStatic } from "../models/taskStatic.model";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import logger from "../services/logger.service";
 
 //  We perform existance check in controllers, business ligic - in managers. In controller We transform strings to object
 const createTeam = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,6 +32,9 @@ const createTeam = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     if (!isCreateTeamRequestBodyValid) {
+        logger.warn("First warning");
+        logger.error("First error");
+        logger.info("Some info");
         return res.status(400).json({
             isSuccess: false,
             message: validateCreateTeamRequestBody.errors,

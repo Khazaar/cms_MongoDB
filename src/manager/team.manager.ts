@@ -12,8 +12,10 @@ import {
 import fs from "fs";
 import multer from "multer";
 import { imageModel } from "../models/image.model";
+import logger from "../services/logger.service";
 
 export class teamManager {
+    public constructor() {}
     static async createTeam(
         authToken: string,
         teamName: string,

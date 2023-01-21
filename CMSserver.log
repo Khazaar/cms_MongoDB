@@ -1,0 +1,33 @@
+[33mwarn[39m: First warning
+[31merror[39m: First error
+[32minfo[39m: Some info
+warn: First warning
+error: First error
+info: Some info
+warn: First warning {"timestamp":"2023-01-21T09:20:20.791Z"}
+error: First error {"timestamp":"2023-01-21T09:20:20.793Z"}
+info: Some info {"timestamp":"2023-01-21T09:20:20.794Z"}
+undefined [undefined] warn: First warning
+undefined [undefined] error: First error
+undefined [undefined] info: Some info
+{
+  message: 'First warning',
+  level: 'warn',
+  timestamp: '2023-01-21T09:34:02.736Z'
+}
+{
+  message: 'First error',
+  level: 'error',
+  timestamp: '2023-01-21T09:34:02.739Z'
+}
+{
+  message: 'Some info',
+  level: 'info',
+  timestamp: '2023-01-21T09:34:02.740Z'
+}
+2023-01-21T09:38:35.625Z [undefined] warn: First warning
+2023-01-21T09:38:35.627Z [undefined] error: First error
+2023-01-21T09:38:35.627Z [undefined] info: Some info
+2023-01-21T09:39:09.329Z warn: First warning
+2023-01-21T09:39:09.331Z error: First error
+2023-01-21T09:39:09.331Z info: Some info

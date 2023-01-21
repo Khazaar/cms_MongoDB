@@ -1,7 +1,5 @@
-import { IUserAuth } from "./../entities";
 import { IUserDB } from "./../models/user.model";
 import { Host, Port, HTTPRequestType } from "../emums";
-import { IDashboard, IOptions } from "../entities";
 import { ITaskDynamic } from "../models/taskDynamic.model";
 import { ITaskStatic, taskStaticModel } from "../models/taskStatic.model";
 import { ITeam, teamModel } from "../models/team.model";
@@ -14,9 +12,7 @@ import {
 import fs from "fs";
 import multer from "multer";
 import { imageModel } from "../models/image.model";
-import { NotificationManager } from "./notification.manager";
 
-//const notificationManager = new NotificationManager();
 export class teamManager {
     static async createTeam(
         authToken: string,

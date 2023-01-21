@@ -39,8 +39,8 @@ export class NotificationManager {
             team.listOfParticipantsEmail.forEach(async (element) => {
                 message += `${element}\n`;
             });
-            await this._bot.telegram.sendMessage(this.chatId, message);
-            await this.twitterClient.v2.tweet(message);
+            //await this._bot.telegram.sendMessage(this.chatId, message);
+            //await this.twitterClient.v2.tweet(message);
         } catch (error) {
             throw new Error(error as any);
         }

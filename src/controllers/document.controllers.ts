@@ -2,13 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import { Model } from "mongoose";
 import { IField } from "../entities";
 import { DocumentService } from "../services/document.service";
+import logger from "../services/logger.service";
 
 const createDocument = (model: Model<any>) => async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
-    console.log(`Creating new document for ${model.modelName}`);
+    logger.info(`Creating new document for ${model.modelName}`);
+    //console.log(`Creating new document for ${model.modelName}`);
     const body = req.body;
     if (body._id != undefined) {
         delete body._id;

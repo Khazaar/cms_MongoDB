@@ -21,6 +21,7 @@ import logger from "../services/logger.service";
 //  We perform existance check in controllers, business ligic - in managers. In controller We transform strings to object
 const createTeam = async (req: Request, res: Response, next: NextFunction) => {
     //  Parce  request body
+    logger.defaultMeta = { context: "manager controller" };
 
     const authToken = (req.headers.authorization as string).slice(7);
     const createTeamRequestBody: ICreateTeamRequest = req.body;
@@ -32,12 +33,17 @@ const createTeam = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     if (!isCreateTeamRequestBodyValid) {
-        logger.warn("First warning");
-        logger.error("First error");
-        logger.info("Some info");
+        logger.error(
+            `Validation failed: ${validateCreateTeamRequestBody.errors?.map(
+                (e) => e.message
+            )}`
+        );
+
         return res.status(400).json({
             isSuccess: false,
-            message: validateCreateTeamRequestBody.errors,
+            message: `${validateCreateTeamRequestBody.errors?.map(
+                (e) => e.message
+            )}`,
         });
     }
 

@@ -1,4 +1,3 @@
-import { ITaskDynamic } from "./../models/taskDynamic.model";
 import { ITeam } from "./../models/team.model";
 import { Request, Response, NextFunction } from "express";
 import { NotificationManager } from "../manager/notification.manager";

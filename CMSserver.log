@@ -31,3 +31,18 @@ undefined [undefined] info: Some info
 2023-01-21T09:39:09.329Z warn: First warning
 2023-01-21T09:39:09.331Z error: First error
 2023-01-21T09:39:09.331Z info: Some info
+2023-01-22T07:14:42.555Z warn: First warning
+2023-01-22T07:14:42.558Z error: First error
+2023-01-22T07:14:42.558Z info: Some info
+2023-01-22T07:14:51.747Z info: Creating new document for team
+2023-01-22T07:21:13.920Z error: Validation failed [object Object]
+2023-01-22T07:21:55.834Z error: Validation failed [object Object]
+2023-01-22T07:22:30.210Z error: Validation failed [object Object]
+2023-01-22T07:23:49.600Z error: Validation failed must match format "email"
+2023-01-22T07:26:25.879Z error: Validation failed :must match format "email"
+2023-01-22T07:37:59.686Z 2023-01-22T07:37:59.686Z error: Validation failed: must match format "email"
+2023-01-22T07:38:36.870Z undefined error: Validation failed: must match format "email"
+2023-01-22T07:39:30.695Z undefined error: Validation failed: must match format "email"
+2023-01-22T07:39:51.985Z error: Validation failed: must match format "email"
+2023-01-22T07:40:46.129Z error: Validation failed: must match format "email"
+2023-01-22T07:41:27.321Z error: Validation failed: must match format "email"

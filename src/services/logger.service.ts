@@ -1,12 +1,15 @@
 import winston, { format, level } from "winston";
 
-const myFormat = winston.format.printf(({ level, message, timestamp }) => {
-    return `${timestamp} ${level}: ${message}`;
-});
+const myFormat = winston.format.printf(
+    ({ level, message, timestamp, defaultMeta }) => {
+        return `${timestamp} ${level}: ${message}`;
+    }
+);
 
 const logger = winston.createLogger({
     level: "info",
     format: winston.format.simple(),
+    defaultMeta: "",
     transports: [
         new winston.transports.File({
             level: "info",

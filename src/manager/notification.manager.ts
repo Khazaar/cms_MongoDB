@@ -3,6 +3,7 @@ import { ITeam } from "./../models/team.model";
 import { Context, Telegraf } from "telegraf";
 import { Update } from "typegram";
 import { TwitterApi, TwitterApiReadWrite, UserV2Result } from "twitter-api-v2";
+import logger from "../services/logger.service";
 
 export class NotificationManager {
     private _bot: Telegraf<Context<Update>>;
@@ -50,7 +51,7 @@ export class NotificationManager {
         try {
             let message = "Task has been taken ⏳\n";
             message += `\n`;
-            message += `Team: ${team.name}`;
+            message += `Team: ${team.name}\n`;
             message += `Task: ${task.taskStatic.name}\n`;
             message += `Start time: ${task.startTime} \n`;
             await this._bot.telegram.sendMessage(this.chatId, message);
@@ -62,8 +63,8 @@ export class NotificationManager {
 
     async notifyTaskSubmitted(team: ITeam, task: ITaskDynamic) {
         try {
-            let message = "*Task has been submitted* 🔺\n";
-            message += `Team: ${team.name}`;
+            let message = "Task has been submitted 🔺\n";
+            message += `Team: ${team.name}\n`;
             message += `\n`;
             message += `Task: ${task.taskStatic.name}\n`;
             message += `End time: ${task.endTime} \n`;
@@ -76,8 +77,8 @@ export class NotificationManager {
 
     async notifyTaskGraded(team: ITeam, task: ITaskDynamic) {
         try {
-            let message = "*Task has been graded* ✅\n";
-            message += `Team ${team.name}`;
+            let message = "Task has been graded ✅\n";
+            message += `Team ${team.name}\n`;
             message += `\n`;
             message += `Task: ${task.taskStatic.name}\n`;
             message += `Points: ${task.points} \n`;
@@ -95,7 +96,7 @@ export class NotificationManager {
             );
             const response = await this.twitterClient.v2.tweet(msg);
 
-            console.log(response);
+            logger.info(response);
         } catch (error) {
             throw new Error(error as any);
         }

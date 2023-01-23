@@ -1,8 +1,14 @@
 import winston, { format, level } from "winston";
 
-const myFormat = winston.format.printf(
-    ({ level, message, timestamp, defaultMeta }) => {
-        return `${timestamp} ${level}: ${message}`;
+const consoleFormat = winston.format.printf(
+    ({ level, message, timestamp, context }) => {
+        return `${level}: ${message}  [${context}]`;
+    }
+);
+
+const fileFormat = winston.format.printf(
+    ({ level, message, timestamp, context }) => {
+        return `${timestamp} ${level}: ${message}  [${context}]`;
     }
 );
 
@@ -16,14 +22,16 @@ const logger = winston.createLogger({
             filename: "CMSserver.log",
             format: winston.format.combine(
                 winston.format.timestamp(),
-                myFormat
+
+                fileFormat
             ),
         }),
         new winston.transports.Console({
             level: "info",
             format: winston.format.combine(
                 winston.format.colorize(),
-                winston.format.simple()
+                winston.format.simple(),
+                consoleFormat
             ),
         }),
     ],

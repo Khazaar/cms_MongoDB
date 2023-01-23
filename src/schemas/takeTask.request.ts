@@ -6,7 +6,7 @@ export interface ITakeTaskRequest {
     collaboratorsEmails: string[];
 }
 
-export const takeTaskmRequestShcema: JSONSchemaType<ITakeTaskRequest> = {
+export const takeTaskRequestShcema: JSONSchemaType<ITakeTaskRequest> = {
     type: "object",
     properties: {
         teamName: {

@@ -3,6 +3,7 @@ import http from "http";
 import { IOptions } from "../entities";
 import fetch from "node-fetch";
 import { Host, HTTPRequestType, Port } from "../emums";
+import logger from "./logger.service";
 
 export const getDocumentFieldRequest = function (
     field: string,
@@ -11,7 +12,7 @@ export const getDocumentFieldRequest = function (
     return new Promise((resolve, reject) => {
         let req = http.request(options, (res) => {
             let output = "";
-            console.log("rest::", options.host + ":" + res.statusCode);
+            //console.log("rest::", options.host + ":" + res.statusCode);
             res.setEncoding("utf8");
 
             res.on("data", function (chunk) {
@@ -21,7 +22,7 @@ export const getDocumentFieldRequest = function (
             res.on("end", () => {
                 try {
                     let document = JSON.parse(output);
-                    console.log("document: ", document);
+                    //console.log("document: ", document);
                     const value = (document[0] as any)[`${field}`];
                     resolve(value);
                 } catch (err) {
@@ -64,10 +65,10 @@ export const getDocumentsRequest = async function (
         }
     } catch (error) {
         if (error instanceof Error) {
-            console.log("error message: ", error.message);
+            logger.error("error message: ", error.message);
             return error.message;
         } else {
-            console.log("unexpected error: ", error);
+            logger.error("unexpected error: ", error);
             return "An unexpected error occurred";
         }
     }
@@ -96,15 +97,15 @@ export const updateDocumentFieldsRequest = async function (
 
         const result = await response.json();
 
-        console.log("result is: ", JSON.stringify(result, null, 4));
+        //console.log("result is: ", JSON.stringify(result, null, 4));
 
         return result;
     } catch (error) {
         if (error instanceof Error) {
-            console.log("error message: ", error.message);
+            logger.error("error message: ", error.message);
             return error.message;
         } else {
-            console.log("unexpected error: ", error);
+            logger.error("unexpected error: ", error);
             return "An unexpected error occurred";
         }
     }
@@ -133,14 +134,14 @@ export const postDocumentRequest = async function (
         }
 
         const result = await response.json();
-        console.log("result is: ", JSON.stringify(result, null, 4));
+        //console.log("result is: ", JSON.stringify(result, null, 4));
         return result;
     } catch (error) {
         if (error instanceof Error) {
-            console.log("error message: ", error.message);
+            logger.error("error message: ", error.message);
             throw new Error(error.message);
         } else {
-            console.log("unexpected error: ", error);
+            logger.error("unexpected error: ", error);
             throw new Error("An unexpected error occurred");
         }
     }
@@ -164,14 +165,14 @@ export const getIDToken = async function (authToken: string) {
         }
 
         const result = await response.json();
-        console.log("result is: ", JSON.stringify(result, null, 4));
+        //console.log("result is: ", JSON.stringify(result, null, 4));
         return result;
     } catch (error) {
         if (error instanceof Error) {
-            console.log("error message: ", error.message);
+            logger.error("error message: ", error.message);
             return error.message;
         } else {
-            console.log("unexpected error: ", error);
+            logger.error("unexpected error: ", error);
             return "An unexpected error occurred";
         }
     }
@@ -197,18 +198,18 @@ export const postNotificationRequest = async function (
         });
 
         if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
+            logger.warn(`Notification hasn't been sent`);
         }
 
         const result = await response.json();
-        console.log("result is: ", JSON.stringify(result, null, 4));
+        //console.log("result is: ", JSON.stringify(result, null, 4));
         return result;
     } catch (error) {
         if (error instanceof Error) {
-            console.log("error message: ", error.message);
+            //logger.error("error message: ", error.message);
             throw new Error(error.message);
         } else {
-            console.log("unexpected error: ", error);
+            //logger.error("unexpected error: ", error);
             throw new Error("An unexpected error occurred");
         }
     }

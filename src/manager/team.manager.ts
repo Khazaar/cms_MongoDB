@@ -143,17 +143,19 @@ export class teamManager {
         taskDynamic.endTime = new Date();
         team.openedTasksNumber -= 1;
         team.listOfTasksDynamicSumbitted.push(taskDynamic);
+        team.finishedTasksNumber += 1;
 
         try {
             await updateDocumentFieldsRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
                 {
-                    ["listOfTasksDynamicSumbitted"]:
+                    listOfTasksDynamicSumbitted:
                         team.listOfTasksDynamicSumbitted,
-                    ["openedTasksNumber"]: team.openedTasksNumber,
-                    ["listOfTasksDynamicInProgress"]:
+                    openedTasksNumber: team.openedTasksNumber,
+                    listOfTasksDynamicInProgress:
                         team.listOfTasksDynamicInProgress,
+                    finishedTasksNumber: team.finishedTasksNumber,
                 }
             );
             await postNotificationRequest(
@@ -221,32 +223,15 @@ export class teamManager {
             await updateDocumentFieldsRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
-                [
-                    {
-                        fieldTitle: "listOfTasksDynamicInProgress",
-                        filedValue: [],
-                    },
-                    {
-                        fieldTitle: "listOfTasksDynamicSumbitted",
-                        filedValue: [],
-                    },
-                    {
-                        fieldTitle: "finishedTasksNumber",
-                        filedValue: 0,
-                    },
-                    {
-                        fieldTitle: "openedTasksNumber",
-                        filedValue: 0,
-                    },
-                    {
-                        fieldTitle: "earnedPoints",
-                        filedValue: 0,
-                    },
-                    {
-                        fieldTitle: "potentionalPoints",
-                        filedValue: 0,
-                    },
-                ]
+                {
+                    listOfTasksDynamicInProgress: [],
+                    listOfTasksDynamicSumbitted: [],
+                    listOfTasksDynamicSolved: [],
+                    finishedTasksNumber: 0,
+                    openedTasksNumber: 0,
+                    earnedPoints: 0,
+                    potentionalPoints: 0,
+                }
             );
         } catch (error) {
             logger.error(error);

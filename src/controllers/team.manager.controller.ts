@@ -326,11 +326,9 @@ const gradeTask = async (req: Request, res: Response, next: NextFunction) => {
             taskDynamic,
             gradeTaskRequestBody.gradePercent
         );
-        return res
-            .status(200)
-            .json(
-                `Task ${gradeTaskRequestBody.taskName} has been graded at ${gradeTaskRequestBody.gradePercent}`
-            );
+        msg = `Task ${gradeTaskRequestBody.taskName} has been graded at ${gradeTaskRequestBody.gradePercent}%`;
+        logger.info(msg);
+        return res.status(200).json(msg);
     } catch (error) {
         logger.error((error as Error).message);
         return res.status(500).send((error as Error).message);

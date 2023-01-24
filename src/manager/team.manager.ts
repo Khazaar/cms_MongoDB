@@ -141,6 +141,7 @@ export class teamManager {
 
         taskDynamic.solution = solution;
         taskDynamic.endTime = new Date();
+        team.openedTasksNumber -= 1;
         team.listOfTasksDynamicSumbitted.push(taskDynamic);
 
         try {
@@ -160,7 +161,6 @@ export class teamManager {
                 "notifyTeam?action=notifyTaskSubmitted",
                 { teamName: team.name, taskName: taskDynamic.taskStatic.name }
             );
-            team.openedTasksNumber -= 1;
         } catch (error) {
             throw new Error(error as any);
         }
@@ -208,7 +208,7 @@ export class teamManager {
 
     static resetTasks = async function (authToken: string) {
         // Get team
-        const teamName = "Popcorns2";
+        const teamName = "Third real team by heart";
         let team = ((
             await getDocumentsRequest(
                 authToken,
@@ -217,36 +217,40 @@ export class teamManager {
             )
         )[0] as unknown) as ITeam;
 
-        await updateDocumentFieldsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
-            [
-                {
-                    fieldTitle: "listOfTasksDynamicInProgress",
-                    filedValue: [],
-                },
-                {
-                    fieldTitle: "listOfTasksDynamicSumbitted",
-                    filedValue: [],
-                },
-                {
-                    fieldTitle: "finishedTasksNumber",
-                    filedValue: 0,
-                },
-                {
-                    fieldTitle: "openedTasksNumber",
-                    filedValue: 0,
-                },
-                {
-                    fieldTitle: "earnedPoints",
-                    filedValue: 0,
-                },
-                {
-                    fieldTitle: "potentionalPoints",
-                    filedValue: 0,
-                },
-            ]
-        );
+        try {
+            await updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
+                [
+                    {
+                        fieldTitle: "listOfTasksDynamicInProgress",
+                        filedValue: [],
+                    },
+                    {
+                        fieldTitle: "listOfTasksDynamicSumbitted",
+                        filedValue: [],
+                    },
+                    {
+                        fieldTitle: "finishedTasksNumber",
+                        filedValue: 0,
+                    },
+                    {
+                        fieldTitle: "openedTasksNumber",
+                        filedValue: 0,
+                    },
+                    {
+                        fieldTitle: "earnedPoints",
+                        filedValue: 0,
+                    },
+                    {
+                        fieldTitle: "potentionalPoints",
+                        filedValue: 0,
+                    },
+                ]
+            );
+        } catch (error) {
+            logger.error(error);
+        }
     };
     static setTeamIcon = async function (authToken: string) {
         const multerStorage = multer.memoryStorage();

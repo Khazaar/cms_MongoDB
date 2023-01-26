@@ -50,7 +50,7 @@ export class teamManager {
                 await updateDocumentFieldsRequest(
                     authToken,
                     `http://${Host.localhost}:${Port.expressLocalEgor}/user/updateByField?field=email&value=${usr.email}`,
-                    [{ fieldTitle: "teamName", filedValue: teamName }]
+                    { fieldTitle: "teamName", filedValue: teamName }
                 );
             }
             await postNotificationRequest(
@@ -96,7 +96,7 @@ export class teamManager {
                     .includes(true)
             ) {
                 throw new Error(
-                    `Task "${taskStatic.name}" is already in progress`
+                    `Task "${taskStatic.name}" is already in progress/submitted/solved`
                 );
             }
             team.openedTasksNumber += 1;

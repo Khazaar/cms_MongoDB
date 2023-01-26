@@ -1,3 +1,4 @@
+import { Role } from "./../emums";
 import {
     ITakeTaskRequest,
     takeTaskRequestShcema,
@@ -25,10 +26,12 @@ import {
     IGradeTaskRequest,
     gradeTaskRequestShcema,
 } from "../schemas/gradeTask.request";
+import jwt_decode from "jwt-decode";
 
 //  We perform existance check in controllers, business ligic - in managers. In controller We transform strings to object
 const createTeam = async (req: Request, res: Response, next: NextFunction) => {
     let msg;
+
     logger.defaultMeta = { context: "team.manager.controller_createTeam" };
     //  Parce  request body
     const authToken = (req.headers.authorization as string).slice(7);
@@ -39,6 +42,20 @@ const createTeam = async (req: Request, res: Response, next: NextFunction) => {
     const isCreateTeamRequestBodyValid = validateCreateTeamRequestBody(
         createTeamRequestBody
     );
+
+    const decodedAuthToken = jwt_decode(authToken);
+    const roles = (decodedAuthToken as any)[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] as string[];
+    if (!roles.includes(Role.CompetitionAdministrator)) {
+        msg = "Competition administrator role required";
+        logger.error(msg);
+        return res.status(500).json({
+            isSuccess: false,
+            message: msg,
+        });
+    }
+
     if (!isCreateTeamRequestBodyValid) {
         msg = `Validation failed: ${validateCreateTeamRequestBody.errors?.map(
             (e) => e.message
@@ -91,6 +108,18 @@ const takeTask = async (req: Request, res: Response, next: NextFunction) => {
     logger.defaultMeta = { context: "team.manager.controller_takeTask" };
     //  Parce  request body
     const authToken = (req.headers.authorization as string).slice(7);
+    const decodedAuthToken = jwt_decode(authToken);
+    const roles = (decodedAuthToken as any)[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] as string[];
+    if (!roles.includes(Role.Participant)) {
+        msg = "Participant role required";
+        logger.error(msg);
+        return res.status(500).json({
+            isSuccess: false,
+            message: msg,
+        });
+    }
     const takeTaskRequestBody: ITakeTaskRequest = req.body;
     const ajv = new Ajv();
     addFormats(ajv, ["email"]);
@@ -203,6 +232,18 @@ const submitTask = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const authToken = (req.headers.authorization as string).slice(7);
+    const decodedAuthToken = jwt_decode(authToken);
+    const roles = (decodedAuthToken as any)[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] as string[];
+    if (!roles.includes(Role.Participant)) {
+        msg = "Participant role required";
+        logger.error(msg);
+        return res.status(500).json({
+            isSuccess: false,
+            message: msg,
+        });
+    }
     //const teamName = req.body.teamName as string;
     const IDToken = (await getIDToken(authToken)) as IUserAuth;
     let userEmail = IDToken.email;
@@ -292,6 +333,18 @@ const gradeTask = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const authToken = (req.headers.authorization as string).slice(7);
+    const decodedAuthToken = jwt_decode(authToken);
+    const roles = (decodedAuthToken as any)[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] as string[];
+    if (!roles.includes(Role.CompetitionAdministrator)) {
+        msg = "Competition administrator role required";
+        logger.error(msg);
+        return res.status(500).json({
+            isSuccess: false,
+            message: msg,
+        });
+    }
     try {
         const team = ((
             await getDocumentsRequest(

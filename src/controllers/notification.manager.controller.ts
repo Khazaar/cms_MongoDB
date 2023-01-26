@@ -28,7 +28,7 @@ const notifyTeam = async (req: Request, res: Response, next: NextFunction) => {
 
         switch (action) {
             case "notifyTeamCreated": {
-                notificationManager.notifyTeamCreated(team);
+                await notificationManager.notifyTeamCreated(team);
                 break;
             }
             case "notifyTaskTaken": {

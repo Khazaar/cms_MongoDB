@@ -13,7 +13,6 @@ import fs from "fs";
 import multer from "multer";
 import { imageModel } from "../models/image.model";
 import logger from "../services/logger.service";
-import ts from "typescript";
 
 export class teamManager {
     public constructor() {}
@@ -50,17 +49,17 @@ export class teamManager {
                 await updateDocumentFieldsRequest(
                     authToken,
                     `http://${Host.localhost}:${Port.expressLocalEgor}/user/updateByField?field=email&value=${usr.email}`,
-                    { fieldTitle: "teamName", filedValue: teamName }
+                    { ["teamName"]: teamName }
                 );
             }
-            await postNotificationRequest(
-                authToken,
-                "notifyTeam?action=notifyTeamCreated",
-                { teamName: teamName }
-            );
         } catch (error) {
             throw new Error(error as string);
         }
+        await postNotificationRequest(
+            authToken,
+            "notifyTeam?action=notifyTeamCreated",
+            { teamName: teamName }
+        );
         return team;
     }
 
@@ -80,8 +79,6 @@ export class teamManager {
         if (team.openedTasksNumber > numberOfParallel) {
             throw new Error("You have reached maximum number of tasks");
         }
-
-        //
 
         try {
             const tasksToCheckTwiceTaken: ITaskDynamic[] = team.listOfTasksDynamicInProgress.concat(

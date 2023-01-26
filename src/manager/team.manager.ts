@@ -1,7 +1,5 @@
-import { IUserAuth } from "./../entities";
 import { IUserDB } from "./../models/user.model";
 import { Host, Port, HTTPRequestType } from "../emums";
-import { IDashboard, IOptions } from "../entities";
 import { ITaskDynamic } from "../models/taskDynamic.model";
 import { ITaskStatic, taskStaticModel } from "../models/taskStatic.model";
 import { ITeam, teamModel } from "../models/team.model";
@@ -14,10 +12,10 @@ import {
 import fs from "fs";
 import multer from "multer";
 import { imageModel } from "../models/image.model";
-import { NotificationManager } from "./notification.manager";
+import logger from "../services/logger.service";
 
-//const notificationManager = new NotificationManager();
 export class teamManager {
+    public constructor() {}
     static async createTeam(
         authToken: string,
         teamName: string,
@@ -51,18 +49,17 @@ export class teamManager {
                 await updateDocumentFieldsRequest(
                     authToken,
                     `http://${Host.localhost}:${Port.expressLocalEgor}/user/updateByField?field=email&value=${usr.email}`,
-                    [{ fieldTitle: "teamName", filedValue: teamName }]
+                    { ["teamName"]: teamName }
                 );
             }
-            await postNotificationRequest(
-                authToken,
-                "notifyTelegramTeam?action=notifyTeamCreated",
-                { teamName: teamName }
-            );
         } catch (error) {
             throw new Error(error as string);
         }
-
+        await postNotificationRequest(
+            authToken,
+            "notifyTeam?action=notifyTeamCreated",
+            { teamName: teamName }
+        );
         return team;
     }
 
@@ -78,19 +75,31 @@ export class teamManager {
             collaboratorEmails: collaborators.map((cl) => cl.email),
         };
 
-        team.listOfTasksDynamicInProgress.push(taskDynamic);
-
-        team.potentionalPoints += taskStatic.points;
-        // repair
         const numberOfParallel = 3;
         if (team.openedTasksNumber > numberOfParallel) {
             throw new Error("You have reached maximum number of tasks");
         }
-        team.openedTasksNumber += 1;
-        //
 
         try {
-            updateDocumentFieldsRequest(
+            const tasksToCheckTwiceTaken: ITaskDynamic[] = team.listOfTasksDynamicInProgress.concat(
+                team.listOfTasksDynamicSumbitted,
+                team.listOfTasksDynamicSolved
+            );
+            if (
+                tasksToCheckTwiceTaken
+                    .map((tsk) => {
+                        return tsk.taskStatic.name == taskStatic.name;
+                    })
+                    .includes(true)
+            ) {
+                throw new Error(
+                    `Task "${taskStatic.name}" is already in progress/submitted/solved`
+                );
+            }
+            team.openedTasksNumber += 1;
+            team.listOfTasksDynamicInProgress.push(taskDynamic);
+            team.potentionalPoints += taskStatic.points;
+            await updateDocumentFieldsRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
                 {
@@ -100,15 +109,16 @@ export class teamManager {
                     ["potentionalPoints"]: team.potentionalPoints,
                 }
             );
-            await postNotificationRequest(
-                authToken,
-                "notifyTelegramTeam?action=notifyTaskTaken",
-                { teamName: team.name, taskName: taskStatic.name }
-            );
+
+            // repair
         } catch (error) {
             throw new Error(error as any);
         }
-
+        await postNotificationRequest(
+            authToken,
+            "notifyTeam?action=notifyTaskTaken",
+            { teamName: team.name, taskName: taskStatic.name }
+        );
         return taskDynamic;
     }
 
@@ -125,26 +135,29 @@ export class teamManager {
             }
         );
         team.listOfTasksDynamicInProgress = listOfTasksDynamicInProgressUPD;
-        team.openedTasksNumber -= 1;
+
         taskDynamic.solution = solution;
         taskDynamic.endTime = new Date();
+        team.openedTasksNumber -= 1;
         team.listOfTasksDynamicSumbitted.push(taskDynamic);
+        team.finishedTasksNumber += 1;
 
         try {
-            updateDocumentFieldsRequest(
+            await updateDocumentFieldsRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
                 {
-                    ["listOfTasksDynamicSumbitted"]:
+                    listOfTasksDynamicSumbitted:
                         team.listOfTasksDynamicSumbitted,
-                    ["openedTasksNumber"]: team.openedTasksNumber,
-                    ["listOfTasksDynamicInProgress"]:
+                    openedTasksNumber: team.openedTasksNumber,
+                    listOfTasksDynamicInProgress:
                         team.listOfTasksDynamicInProgress,
+                    finishedTasksNumber: team.finishedTasksNumber,
                 }
             );
             await postNotificationRequest(
                 authToken,
-                "notifyTelegramTeam?action=notifyTaskSubmitted",
+                "notifyTeam?action=notifyTaskSubmitted",
                 { teamName: team.name, taskName: taskDynamic.taskStatic.name }
             );
         } catch (error) {
@@ -167,25 +180,23 @@ export class teamManager {
         taskDynamic.points =
             taskDynamic.taskStatic.points * (gradePercent / 100);
         team.listOfTasksDynamicSumbitted = listOfTasksDynamicSumbittedUPD;
-        //team.openedTasksNumber -= 1;
         team.earnedPoints += taskDynamic.points;
         team.listOfTasksDynamicSolved.push(taskDynamic);
 
         try {
-            updateDocumentFieldsRequest(
+            await updateDocumentFieldsRequest(
                 authToken,
                 `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
                 {
                     ["listOfTasksDynamicSumbitted"]:
                         team.listOfTasksDynamicSumbitted,
                     ["listOfTasksDynamicSolved"]: team.listOfTasksDynamicSolved,
-                    ["openedTasksNumber"]: team.openedTasksNumber,
                     ["earnedPoints"]: team.earnedPoints,
                 }
             );
             await postNotificationRequest(
                 authToken,
-                "notifyTelegramTeam?action=notifyTaskGraded",
+                "notifyTeam?action=notifyTaskGraded",
                 { teamName: team.name, taskName: taskDynamic.taskStatic.name }
             );
         } catch (error) {
@@ -196,7 +207,7 @@ export class teamManager {
 
     static resetTasks = async function (authToken: string) {
         // Get team
-        const teamName = "Popcorns2";
+        const teamName = "Third real team by heart";
         let team = ((
             await getDocumentsRequest(
                 authToken,
@@ -205,36 +216,23 @@ export class teamManager {
             )
         )[0] as unknown) as ITeam;
 
-        updateDocumentFieldsRequest(
-            authToken,
-            `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
-            [
+        try {
+            await updateDocumentFieldsRequest(
+                authToken,
+                `http://${Host.localhost}:${Port.expressLocalEgor}/team/updateByField?field=name&value=${team.name}`,
                 {
-                    fieldTitle: "listOfTasksDynamicInProgress",
-                    filedValue: [],
-                },
-                {
-                    fieldTitle: "listOfTasksDynamicSumbitted",
-                    filedValue: [],
-                },
-                {
-                    fieldTitle: "finishedTasksNumber",
-                    filedValue: 0,
-                },
-                {
-                    fieldTitle: "openedTasksNumber",
-                    filedValue: 0,
-                },
-                {
-                    fieldTitle: "earnedPoints",
-                    filedValue: 0,
-                },
-                {
-                    fieldTitle: "potentionalPoints",
-                    filedValue: 0,
-                },
-            ]
-        );
+                    listOfTasksDynamicInProgress: [],
+                    listOfTasksDynamicSumbitted: [],
+                    listOfTasksDynamicSolved: [],
+                    finishedTasksNumber: 0,
+                    openedTasksNumber: 0,
+                    earnedPoints: 0,
+                    potentionalPoints: 0,
+                }
+            );
+        } catch (error) {
+            logger.error(error);
+        }
     };
     static setTeamIcon = async function (authToken: string) {
         const multerStorage = multer.memoryStorage();
@@ -248,8 +246,8 @@ export class teamManager {
         //const savedImage = await imageModel.create(image);
         try {
             imageDoc.save();
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            logger.error(error);
         }
         //await imageModel.create(image);
     };

@@ -1,18 +1,15 @@
-import { ITaskDynamic } from "./../models/taskDynamic.model";
 import { ITeam } from "./../models/team.model";
 import { Request, Response, NextFunction } from "express";
 import { NotificationManager } from "../manager/notification.manager";
 import { getDocumentsRequest } from "../services/request.service";
 import { Host, Port } from "../emums";
+import logger from "../services/logger.service";
 
 //  We perform existance check in controllers, business ligic - in managers. In controller We transform strings to object
 const notificationManager = new NotificationManager();
 
-const notifyTelegramTeam = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+const notifyTeam = async (req: Request, res: Response, next: NextFunction) => {
+    let msg: string;
     const teamName = req.body.teamName as string;
     const taskName = req.body.taskName as string;
     const action = req.query.action as string;
@@ -31,14 +28,15 @@ const notifyTelegramTeam = async (
 
         switch (action) {
             case "notifyTeamCreated": {
-                notificationManager.notifyTeamCreated(team);
+                await notificationManager.notifyTeamCreated(team);
                 break;
             }
             case "notifyTaskTaken": {
                 const task = team.listOfTasksDynamicInProgress.filter(
                     (tsk) => tsk.taskStatic.name == taskName
                 )[0];
-                notificationManager.notifyTaskTaken(team, task);
+                await notificationManager.notifyTaskTaken(team, task);
+
                 break;
             }
 
@@ -46,14 +44,14 @@ const notifyTelegramTeam = async (
                 const task = team.listOfTasksDynamicSumbitted.filter(
                     (tsk) => tsk.taskStatic.name == taskName
                 )[0];
-                notificationManager.notifyTaskSubmitted(team, task);
+                await notificationManager.notifyTaskSubmitted(team, task);
                 break;
             }
             case "notifyTaskGraded": {
                 const task = team.listOfTasksDynamicSolved.filter(
                     (tsk) => tsk.taskStatic.name == taskName
                 )[0];
-                notificationManager.notifyTaskGraded(team, task);
+                await notificationManager.notifyTaskGraded(team, task);
                 break;
             }
         }
@@ -64,16 +62,6 @@ const notifyTelegramTeam = async (
     }
 };
 
-const notifyTweet = async (req: Request, res: Response, next: NextFunction) => {
-    const authToken = (req.headers.authorization as string).slice(7);
-    try {
-        notificationManager.notifyTwitter("Testing");
-        return res.status(200).json(`Notification sent`);
-    } catch (error) {
-        return res.status(500).send((error as Error).message);
-    }
-};
 export default {
-    notifyTelegramTeam,
-    notifyTweet,
+    notifyTeam,
 };

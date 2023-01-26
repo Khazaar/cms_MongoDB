@@ -2,7 +2,6 @@ import express, { Router } from "express";
 import controller from "../controllers/document.controllers";
 import { TaskStaticPermission } from "../emums";
 import { checkJwt } from "../middleware/authz.middleware";
-import { checkPermissions } from "../middleware/permissions.middleware";
 import { taskStaticModel } from "../models/taskStatic.model";
 
 const router: Router = express.Router();

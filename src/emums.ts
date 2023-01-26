@@ -4,6 +4,9 @@ export enum Role {
     Participant = "Participant",
     TasksAdministrator = "Tasks administrator",
 }
+export enum Permissions {
+    createTeam = "create:team",
+}
 
 export enum TaskCategory {
     Frontend = "Frontend",
